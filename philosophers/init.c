@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 13:17:55 by caida-si          #+#    #+#             */
-/*   Updated: 2025/10/23 13:53:08 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/10/25 20:00:57 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static void	init_philos(t_data *data, t_philo *philos)
 
 int	init_all(t_data *data, t_philo **philos)
 {
-	*philos = malloc(sizeof(t_philo) * data->nb_philo)
+	*philos = malloc(sizeof(t_philo) * data->nb_philo);
 		if (!*philos)
 		return (1);
 	if (init_mutexes(data) == 1)

@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 10:58:38 by caida-si          #+#    #+#             */
-/*   Updated: 2025/10/23 13:50:18 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/10/25 20:12:02 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	main(int ac, char **av)
 {
 	t_data	data;
-	t_data	*philos;
+	t_philo	*philos;
 
 	if (parse_args(ac, av, &data) == 1)
 		return (1);
