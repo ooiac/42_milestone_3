@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 14:01:17 by caida-si          #+#    #+#             */
-/*   Updated: 2025/10/23 14:03:26 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/10/27 13:21:27 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	start_simulation(t_data *data,t_philo *philos)
 	int	i;
 	data->start_time = get_time();
 	i = 0;
-	while(1 < data->nb_philo)
+	while(i < data->nb_philo)
 	{
 		philos[i].last_meal = data->start_time;
 		if (pthread_create(&philos[i].thread, NULL, routine, &philos[i]) != 0)

@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 13:17:55 by caida-si          #+#    #+#             */
-/*   Updated: 2025/10/25 20:00:57 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/10/27 13:19:05 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,10 @@ int	init_all(t_data *data, t_philo **philos)
 		if (!*philos)
 		return (1);
 	if (init_mutexes(data) == 1)
-		return (1);
+	{
+	free(*philos);
+	return (1);
+	}
 	init_philos(data, *philos);
 	return (0);
 }
