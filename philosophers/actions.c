@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 14:01:17 by caida-si          #+#    #+#             */
-/*   Updated: 2025/10/28 14:50:37 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/10/28 19:40:32 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,15 @@ void	*routine(void *arg)
 		single_philo(p);
 	if (p->id % 2 == 0)
 		usleep(1000);
-	while (!p->data->stop)
+	while (1)
 	{
+		pthread_mutex_lock(&p->data->print_lock);
+		if (p->data->stop)
+		{
+			pthread_mutex_unlock(&p->data->print_lock);
+			break ;
+		}
+		pthread_mutex_unlock(&p->data->print_lock);
 		print_action(p, "is thinking");
 		eat(p);
 		print_action(p, "is_sleeping");
