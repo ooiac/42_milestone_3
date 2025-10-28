@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 13:17:55 by caida-si          #+#    #+#             */
-/*   Updated: 2025/10/27 13:19:05 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/10/27 18:26:59 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ static int	init_mutexes(t_data *data)
 		i++;
 	}
 	if (pthread_mutex_init(&data->print_lock, NULL) != 0)
+		return (1);
+	if (pthread_mutex_init(&data->meal_lock, NULL) != 0)
 		return (1);
 	return (0);
 }
@@ -54,12 +56,12 @@ static void	init_philos(t_data *data, t_philo *philos)
 int	init_all(t_data *data, t_philo **philos)
 {
 	*philos = malloc(sizeof(t_philo) * data->nb_philo);
-		if (!*philos)
+	if (!*philos)
 		return (1);
 	if (init_mutexes(data) == 1)
 	{
-	free(*philos);
-	return (1);
+		free(*philos);
+		return (1);
 	}
 	init_philos(data, *philos);
 	return (0);

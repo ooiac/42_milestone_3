@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 19:59:31 by caida-si          #+#    #+#             */
-/*   Updated: 2025/10/25 19:59:33 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/10/28 14:47:59 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,45 +15,52 @@
 static int	all_ate_enough(t_philo *philos, t_data *data)
 {
 	int	i;
-	
+
 	if (data->meals_required == -1)
-		return 0;
+		return (0);
 	i = 0;
 	while (i < data->nb_philo)
 	{
+		pthread_mutex_lock(&data->meal_lock);
 		if (philos[i].meals_eaten < data->meals_required)
+		{
+			pthread_mutex_unlock(&data->meal_lock);
 			return (0);
+		}
+		pthread_mutex_unlock(&data->meal_lock);
 		i++;
 	}
+	pthread_mutex_lock(&data->print_lock);
+	data->stop = 1;
+	pthread_mutex_unlock(&data->print_lock);
 	return (1);
 }
 
 void	monitor(t_philo *philos, t_data *data)
 {
-	int	i;
-	long long now;
+	int			i;
+	long long	now;
 
-	while(!data->stop)
+	while (!data->stop)
 	{
-		i = 0;
-		while (i < data->nb_philo)
+		i = -1;
+		while (++i < data->nb_philo)
 		{
 			now = get_time();
+			pthread_mutex_lock(&data->meal_lock);
 			if (now - philos[i].last_meal > data->time_die)
 			{
+				pthread_mutex_unlock(&data->meal_lock);
 				pthread_mutex_lock(&data->print_lock);
 				printf("%lld %d died\n", now - data->start_time, philos[i].id);
 				data->stop = 1;
 				pthread_mutex_unlock(&data->print_lock);
 				return ;
 			}
-			i++;
+			pthread_mutex_unlock(&data->meal_lock);
 		}
 		if (all_ate_enough(philos, data))
-		{
-			data->stop = 1;
 			return ;
-		}
 		usleep(1000);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 19:59:43 by caida-si          #+#    #+#             */
-/*   Updated: 2025/10/25 19:59:45 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/10/28 14:51:00 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,13 @@ void	cleanup(t_data *data, t_philo *philos)
 	int	i;
 
 	i = 0;
-	while(i < data->nb_philo)
+	while (i < data->nb_philo)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
 		i++;
 	}
 	pthread_mutex_destroy(&data->print_lock);
+	pthread_mutex_destroy(&data->meal_lock);
 	free(data->forks);
 	free(philos);
 }
