@@ -1,0 +1,94 @@
+Minishell (sem bônus) — Plano de divisão de trabalho da dupla
+Data: 2025-11-01
+
+Resumo: Duas metades com responsabilidades claras e pontos de integração. A ideia é que cada metade possa ser desenvolvida e testada em isolamento (com mocks), e depois integradas pelo contrato combinado.
+
+===========================
+METADE A — PARSER & EXPANSOR
+Responsável por: análise léxica, validação de sintaxe, construção de AST, expansão de variáveis e quotes, preparação de heredocs (coleta de conteúdo e marcação), e serialização de erros de sintaxe/expansão.
+
+Entregáveis A:
+1) Lexer (src/lexer/*, include/lexer.h, include/token.h)
+   - Gera lista de tokens: WORD, PIPE, <, >, >>, <<
+   - Preserva quotes no valor do token para o parser/expander.
+
+2) Parser (src/parser/*, include/parser.h, include/ast.h)
+   - Valida sintaxe mínima (pipes e redireções com alvo)
+   - Constrói AST com nós CMD e PIPE (argv bruto + redireções)
+
+3) Expansor (src/expander/*, include/expander.h)
+   - Expande $VAR e $?; remove quotes respeitando semântica
+   - Prepara strings finais em argv[] e em alvos de redireção
+
+4) Heredoc (src/heredoc/*, include/heredoc.h)
+   - Coleta conteúdo dos heredocs, com/sem expansão conforme delimitador
+   - Sinais específicos para interromper heredoc
+
+5) Sinais (camada do prompt) (src/signals/*, include/signals.h)
+   - Comportamento de Ctrl-C / Ctrl-\ durante readline
+
+Contrato de saída A -> B:
+  - Funções principais expostas (nomes ilustrativos):
+    parse_and_expand(line, env) -> t_ast* (ou NULL em erro)
+    setup_heredocs_for_ast(ast, env) -> int (0 ok, !=0 erro)
+  - AST final sem quotes e com argv/redições prontos para execução
+  - Convenção de erro: códigos e mensagens padronizadas
+
+Testes sugeridos para A:
+  - Linhas com quotes aninhadas, variáveis não definidas, múltiplos pipes
+  - Redireções encadeadas e heredoc com delimitador quotado
+
+===========================
+METADE B — EXECUÇÃO & BUILTINS & ENV & SINAIS NA EXECUÇÃO
+Responsável por: execução de AST (fork/exec, pipelines, dup2, redireções), builtins, gestão de ambiente, integração com sinais durante execução, e gerenciamento do exit status global.
+
+Entregáveis B:
+1) Executor (src/executor/*, include/exec.h)
+   - Executa comando simples e pipeline
+   - Integra redireções e heredocs prontos
+   - Resolve PATH e chama execve
+
+2) Redireções (src/redir/*, include/redir.h)
+   - Abre arquivos e aplica dup2; restaura stdio quando necessário
+
+3) Builtins (src/builtins/*, include/builtins.h)
+   - echo, cd, pwd, export, unset, env, exit
+   - Regras de execução no processo pai quando não há pipeline
+
+4) Ambiente (src/env/*, include/env.h)
+   - Lista ligada de KEY=VAL; get/set/unset; conversão para envp
+
+5) Sinais na execução (src/signals/*)
+   - Handlers apropriados para processos filhos
+
+Contrato de entrada B <- A:
+  - Recebe t_ast final (argv/redições prontos) e t_env*
+  - Pode assumir que sintaxe e expansão já foram tratadas
+
+Contrato de saída B:
+  - Retorna exit status do último comando/pipeline
+  - Atualiza $? no ambiente
+
+Testes sugeridos para B:
+  - Pipelines encadeados com redireções
+  - Builtins em e fora de pipelines (cd/export/unset/exit no pai)
+  - Comando inexistente -> 127, permissão negada -> 126
+
+===========================
+PONTOS DE INTEGRAÇÃO E CALENDÁRIO
+1) Semana 1: protótipos de AST, tokens e contrato de exec (headers comentados prontos)
+2) Semana 2: Lexer/Parser mínimos + Executor de comando simples + echo/pwd/env
+3) Semana 3: Expansão + Builtins restantes + Redireções
+4) Semana 4: Pipeline + Heredoc + Sinais finos e polimento/erros
+
+Definição de pronto (DoD):
+  - Linhas com quotes/expansões funcionam
+  - Todos builtins OK (com -n no echo)
+  - Pipes e redireções OK
+  - Sinais conforme esperado
+  - Memória sem leaks nos fluxos principais
+
+Comunicação:
+  - Sincronização diária breve (15min)
+  - Branches: feature/a-lexer, feature/a-parser, feature/b-executor, etc.
+  - Revisões cruzadas antes de merge
