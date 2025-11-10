@@ -1,44 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_uitoa.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/10 18:10:43 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/10 18:46:35 by caida-si         ###   ########.fr       */
+/*   Created: 2025/07/07 16:21:36 by caida-si          #+#    #+#             */
+/*   Updated: 2025/07/08 14:37:03 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "libft.h"
 
-void	start_shell(t_env *env)
+static int	count_digits(unsigned int n)
 {
-	char	*input;
+	int	count;
 
-	(void)env;
-	while (1)
+	count = 1;
+	while (n >= 10)
 	{
-		input = readline("minishell$ ");
-		if (!input)
-		{
-			printf("exit\n");
-			break ;
-		}
-		if (*input)
-			add_history(input);
-		free(input);
+		n /= 10;
+		count++;
 	}
+	return (count);
 }
 
-int	main(int ac, char **av, char **envp)
+char	*ft_uitoa(unsigned int n)
 {
-	t_env	*env;
+	int		len;
+	char	*str;
 
-	(void)ac;
-	(void)av;
-	env = env_from_envp(envp);
-	start_shell(env);
-	free_env(env);
-	return (0);
+	len = count_digits(n);
+	str = (char *)malloc(sizeof(char) * (len + 1));
+	if (!str)
+		return (NULL);
+	str[len] = '\0';
+	while (len--)
+	{
+		str[len] = (n % 10) + '0';
+		n /= 10;
+	}
+	return (str);
 }
