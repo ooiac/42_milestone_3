@@ -1,30 +1,42 @@
 /* ************************************************************************** */
-/*   token.h - definição conceitual dos tokens (comentários e pseudocódigo)   */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fluca <fluca@student.42luxembourg.lu>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/12 16:47:17 by fluca             #+#    #+#             */
+/*   Updated: 2025/11/12 16:47:17 by fluca            ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOKEN_H
-#define TOKEN_H
+# define TOKEN_H
 
-/* Tipos de token (conceitual)
-// enum e_token_type {
-//   TK_WORD,
-//   TK_PIPE,          // |
-//   TK_REDIR_IN,      // <
-//   TK_REDIR_OUT,     // >
-//   TK_REDIR_APP,     // >>
-//   TK_HEREDOC,       // <<
-// };
+# include <ctype.h>
+# include <stdlib.h>
+# include <string.h>
+# include <stdio.h>
 
-// struct s_token {
-//   int              type;
-//   char            *value;   // conteúdo textual
-//   struct s_token  *next;
-// };
+typedef enum e_token_type
+{
+	T_WORD,
+	T_PIPE,
+	T_REDIR_IN,
+	T_REDIR_OUT,
+	T_REDIR_APPEND,
+	T_HEREDOC,
+}	t_token_type;
 
-Operações desejadas (apenas notas):
-  - token_new(type, value)
-  - token_push_back(&list, token)
-  - token_free_list(list)
-*/
+typedef struct s_token
+{
+	t_token_type	type;
+	char			*value;
+	struct s_token	*next;
+}	t_token;
 
-#endif /* TOKEN_H */
+t_token	*token_new(t_token type, char *value);
+void	token_add_back(t_token **lst, t_token *new);
+void	token_clear(t_token **lst);
+
+#endif

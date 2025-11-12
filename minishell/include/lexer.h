@@ -1,19 +1,27 @@
 /* ************************************************************************** */
-/*   lexer.h - interface conceitual do lexer (comentado)                       */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fluca <fluca@student.42luxembourg.lu>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/12 16:58:05 by fluca             #+#    #+#             */
+/*   Updated: 2025/11/12 16:58:05 by fluca            ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
-#define LEXER_H
+# define LEXER_H
 
-/*
-Responsabilidade:
-  - Receber linha bruta e produzir lista de tokens
-  - Respeitar quotes simples e duplas (sem remover ainda)
-  - Identificar operadores: |, <, >, >>, <<
-  - Lidar com espaços e sequências vazias
+# include "token.h"
+#include "libft.h"
 
-// t_token *lex_line(const char *line, int *lex_err);
-// int      is_operator_char(int c);
-*/
+t_token *lexer_tokenize(const char *line);
 
-#endif /* LEXER_H */
+int   is_operator_char(char c);
+int   is_whitespace(char c);
+char  *read_word(const char *line, int *i);
+char  *read_pipe(const char *line, int *i, t_token_type *type);
+char  *read_heredoc(const char *line, int *i, t_token_type *type);
+
+#endif
