@@ -37,6 +37,9 @@ typedef struct	s_env
 t_env	*env_from_envp(char **envp);
 void	free_env(t_env *env);
 char	*env_get(t_env *env, const char *key);
+char	**env_to_envp(t_env *env);
+char	*resolve_executable(const char *cmd, t_env *env);
+
 
 /* main loop */
 void	start_shell(t_env *env);
