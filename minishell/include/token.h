@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42luxembourg.lu>      +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:47:17 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/12 16:47:17 by fluca            ###   ########.fr       */
+/*   Updated: 2025/11/13 11:39:46 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
-t_token	*token_new(t_token type, char *value);
+t_token	*token_new(t_token_type type, char *value);
 void	token_add_back(t_token **lst, t_token *new);
 void	token_clear(t_token **lst);
 

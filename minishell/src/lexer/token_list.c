@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42luxembourg.lu>      +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:21:33 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/12 18:21:33 by fluca            ###   ########.fr       */
+/*   Updated: 2025/11/13 11:45:56 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 
-t_token	*token_new(t_token_type, char *value)
+t_token	*token_new(t_token_type type, char *value)
 {
     t_token *new = malloc(sizeof(t_token));
     if(!new)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42luxembourg.lu>      +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:38:13 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/12 18:38:13 by fluca            ###   ########.fr       */
+/*   Updated: 2025/11/13 11:39:44 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_token *lexer_tokenize(const char *line)
     t_token *head;
     int     i;
 
-    *head = NULL;
+    head = NULL;
     i = 0;
 
     while(line[i])
@@ -27,7 +27,7 @@ t_token *lexer_tokenize(const char *line)
         else if (is_operator_char(line[i]))
         {
             t_token_type type;
-            char *op = read_operator(line, &I, &type);
+            char *op = read_operator(line, &i, &type);
             token_add_back(&head, token_new(type, op));
         }
         else
