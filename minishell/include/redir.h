@@ -5,13 +5,45 @@
 #ifndef REDIR_H
 #define REDIR_H
 
-/*
-Responsabilidade:
-  - Abrir arquivos para <, >, >> com flags corretas
-  - Aplicar dup2 em fds durante execução do comando
+#include "minishell.h"
 
-// int apply_redirections(t_cmd *cmd, int *saved_stdin, int *saved_stdout);
-// void restore_stdio(int saved_stdin, int saved_stdout);
-*/
+int	open_redir_in(const char *file)
+{
+	int fd;
+
+	fd = open(file, ORDONLY);
+	if (fd < 0)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		perror(file);
+	}
+	return (fd);
+}
+
+int	open_redir_out(const char *file)
+{
+	int	fd;
+
+	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644)
+	if (fd < 0)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		perror(file);
+	}
+	return(fd);
+}
+
+int	open_redir_append(const char *file)
+{
+	int	fd;
+
+	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (fd < 0)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		perror(file);
+	}
+	return (fd);
+}
 
 #endif /* REDIR_H */

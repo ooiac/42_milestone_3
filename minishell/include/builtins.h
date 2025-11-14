@@ -5,25 +5,27 @@
 #ifndef BUILTINS_H
 #define BUILTINS_H
 
-/*
-Builtins requeridos (sem bônus):
-  - echo [-n]
-  - cd [path]
-  - pwd
-  - export [KEY=VALUE]
-  - unset [KEY]
-  - env
-  - exit [status]
+#include "minishell.h"
 
-// int bi_echo(char **argv);
-// int bi_cd(char **argv, t_env **env);
-// int bi_pwd(char **argv);
-// int bi_export(char **argv, t_env **env);
-// int bi_unset(char **argv, t_env **env);
-// int bi_env(char **argv, t_env *env);
-// int bi_exit(char **argv, int *should_exit);
-// int is_builtin(const char *name);
-// int run_builtin(char **argv, t_env **env, int *should_exit);
-*/
+int	is_builtin(const char *cmd)
+{
+    if (!cmd)
+        return (0);
+    if (ft_strcmp(cmd, "echo") == 0)
+        return (1);
+    if (ft_strcmp(cmd, "cd") == 0)
+        return (1);
+    if (ft_strcmp(cmd, "pwd") == 0)
+        return (1);
+    if (ft_strcmp(cmd, "export") == 0)
+        return (1);
+    if (ft_strcmp(cmd, "unset") == 0)
+        return (1);
+    if (ft_strcmp(cmd, "env") == 0)
+        return (1);
+    if (ft_strcmp(cmd, "exit") == 0)
+        return (1);
+    return (0);
+}
 
 #endif /* BUILTINS_H */
