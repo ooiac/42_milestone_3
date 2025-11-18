@@ -26,27 +26,31 @@
 
 # include "../libft/libft.h"
 
-typedef struct	s_env
+typedef struct s_env
 {
-	char			*key;
-	char			*val;
-	struct s_env	*next;
+    char			*key;
+    char			*val;
+    struct s_env	*next;
 }	t_env;
 
-/*env*/
+/* env */
 t_env	*env_from_envp(char **envp);
 void	free_env(t_env *env);
 char	*env_get(t_env *env, const char *key);
 char	**env_to_envp(t_env *env);
+void	free_envp(char **envp);
 
-/*exec*/
+/* exec */
 char	*resolve_executable(const char *cmd, t_env *env);
+int		run_single_command(char **av, t_env *env);
 int		run_pipeline(char ***cmds, t_env *env);
+
+/* pipeline helpers */
 int		**create_pipes(int n);
 void	close_all_pipes(int **pipes, int n);
-void	exec_in_pipeline(char **cmd, int **pipes, int i, int n_cmds, t_env *env);
+void	exec_in_pipeline(char **cmd, int **pipes, int i, int n_cmds,
+            t_env *env);
 int		wait_all(pid_t *pids, int n);
-int 	run_single_command(char **av, t_env *env);
 
 /* builtins */
 int		is_builtin(const char *cmd);
@@ -59,9 +63,7 @@ int		builtin_export(char **args, t_env **env);
 int		builtin_unset(char **args, t_env **env);
 int		builtin_exit(char **args);
 
-
 /* main loop */
 void	start_shell(t_env *env);
-
 
 #endif
