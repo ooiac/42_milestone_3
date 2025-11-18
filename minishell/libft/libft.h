@@ -52,6 +52,7 @@ void	ft_putnbr_fd(int n, int fd);
 void	ft_striteri(char *s, void (*f)(unsigned int, char *));
 void	ft_putendl_fd(char *s, int fd);
 char	*ft_uitoa(unsigned int n);
+int		ft_strcmp(const char *s1, const char *s2);
 
 typedef struct s_list
 {

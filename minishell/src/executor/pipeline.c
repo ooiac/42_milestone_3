@@ -32,7 +32,7 @@ void	close_all_pipes(int **pipes, int n)
 	int i;
 
 	if (!pipes)
-		return i;
+		return ;
 	i = 0;
 	while (i < n)
 	{

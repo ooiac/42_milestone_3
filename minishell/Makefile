@@ -1,15 +1,41 @@
-# Minishell - Makefile placeholder (sem build por enquanto)
+NAME = minishell
 
-.PHONY: all clean fclean re
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -g
+INCLUDES = -I./include -I./libft
 
-all:
-	@echo "[minishell] Scaffold criado. Implementar fontes antes de compilar."
-	@echo "Estrutura criada em src/ e include/."
+LIBFT = libft/libft.a
+LDFLAGS = -L./libft -lft -lreadline
+
+SRCS = src/main.c \
+       src/env/env.c \
+       src/env/env_to_envp.c \
+       src/executor/exec.c \
+       src/executor/resolve_path.c \
+       src/executor/pipeline.c \
+       src/executor/pipeline_utils.c
+
+OBJS = $(SRCS:.c=.o)
+
+all: $(LIBFT) $(NAME)
+
+$(LIBFT):
+	$(MAKE) -C libft
+
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	@echo "Nada para limpar ainda (apenas pseudocódigo)."
+	$(MAKE) -C libft clean
+	rm -f $(OBJS)
 
 fclean: clean
-	@echo "Sem binários gerados."
+	$(MAKE) -C libft fclean
+	rm -f $(NAME)
 
 re: fclean all
+
+.PHONY: all clean fclean re

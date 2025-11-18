@@ -12,25 +12,6 @@
 
 #include "../include/minishell.h"
 
-void	start_shell(t_env *env)
-{
-	char	*input;
-
-	(void)env;
-	while (1)
-	{
-		input = readline("minishell$ ");
-		if (!input)
-		{
-			printf("exit\n");
-			break ;
-		}
-		if (*input)
-			add_history(input);
-		free(input);
-	}
-}
-
 int	main(int ac, char **av, char **envp)
 {
 	t_env	*env;
@@ -38,6 +19,8 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 	env = env_from_envp(envp);
+	if (!env)
+		return (1);
 	start_shell(env);
 	free_env(env);
 	return (0);
