@@ -26,7 +26,7 @@
 
 # include "../libft/libft.h"
 
-typedef struct s_env
+typedef struct	s_env
 {
     char			*key;
     char			*val;

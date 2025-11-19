@@ -7,13 +7,22 @@ INCLUDES = -I./include -I./libft
 LIBFT = libft/libft.a
 LDFLAGS = -L./libft -lft -lreadline
 
-SRCS = src/main.c \
+SRCS = main.c \
        src/env/env.c \
        src/env/env_to_envp.c \
        src/executor/exec.c \
        src/executor/resolve_path.c \
        src/executor/pipeline.c \
-       src/executor/pipeline_utils.c
+       src/executor/pipeline_utils.c \
+       src/shell/shell.c \
+       src/builtins/builtin_utils.c \
+       src/builtins/builtin_echo.c \
+       src/builtins/builtin_pwd.c \
+       src/builtins/builtin_env.c \
+       src/builtins/builtin_cd.c \
+       src/builtins/builtin_export.c \
+       src/builtins/builtin_unset.c \
+       src/builtins/builtin_exit.c
 
 OBJS = $(SRCS:.c=.o)
 
