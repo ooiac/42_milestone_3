@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 17:36:04 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/13 17:36:10 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 13:44:15 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	env_count(t_env *env)
 {
-	int count;
+	int	count;
 
 	count = 0;
 	while (env)
@@ -27,7 +27,7 @@ static int	env_count(t_env *env)
 
 void	free_envp(char **envp)
 {
-	int i;
+	int	i;
 
 	if (!envp)
 		return ;

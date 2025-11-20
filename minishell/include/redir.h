@@ -1,9 +1,17 @@
 /* ************************************************************************** */
-/*   redir.h - interface conceitual de redireções (comentado)                  */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redir.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/20 13:50:51 by caida-si          #+#    #+#             */
+/*   Updated: 2025/11/20 13:50:53 by caida-si         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REDIR_H
-#define REDIR_H
+# define REDIR_H
 
 #include "minishell.h"
 

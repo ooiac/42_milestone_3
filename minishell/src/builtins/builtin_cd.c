@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:37:46 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:38:09 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 13:49:11 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	builtin_cd(char **args, t_env **env)
 {
 	char	*path;
+
 	(void)env;
 	if (!args[1])
 	{

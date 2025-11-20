@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:37:58 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:38:11 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 13:47:46 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	builtin_export(char **args, t_env **env)
 	if (!args[1])
 	{
 		print_sorted_env(*env);
-		return(0);
+		return (0);
 	}
 	i = 1;
 	while (args[i])

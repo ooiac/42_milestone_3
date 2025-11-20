@@ -6,12 +6,12 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:39:27 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:39:27 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 13:50:24 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SIGNALS_H
-#define SIGNALS_H
+# define SIGNALS_H
 
 #include "minishell.h"
 

@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:26 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:38:26 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 13:41:24 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	**create_pipes(int n)
 
 void	close_all_pipes(int **pipes, int n)
 {
-	int i;
+	int	i;
 
 	if (!pipes)
 		return ;

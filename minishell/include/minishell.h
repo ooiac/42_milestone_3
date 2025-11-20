@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:44:30 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:39:10 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 13:52:45 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@
 
 typedef struct	s_env
 {
-    char			*key;
-    char			*val;
-    struct s_env	*next;
+	char			*key;
+	char			*val;
+	struct s_env	*next;
 }	t_env;
 
 /* env */
@@ -49,7 +49,7 @@ int		run_pipeline(char ***cmds, t_env *env);
 int		**create_pipes(int n);
 void	close_all_pipes(int **pipes, int n);
 void	exec_in_pipeline(char **cmd, int **pipes, int i, int n_cmds,
-            t_env *env);
+						t_env *env);
 int		wait_all(pid_t *pids, int n);
 
 /* builtins */
