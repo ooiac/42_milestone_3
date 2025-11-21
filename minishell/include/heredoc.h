@@ -1,17 +1,28 @@
 /* ************************************************************************** */
-/*   heredoc.h - interface conceitual de heredoc (comentado)                   */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/19 20:11:48 by fluca             #+#    #+#             */
+/*   Updated: 2025/11/20 21:50:22 by fluca            ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HEREDOC_H
-#define HEREDOC_H
+# define HEREDOC_H
 
-/*
-Responsabilidade:
-  - Criar heredocs antes da execução (ou on-demand)
-  - Respeitar expansão baseada em quotes no delimitador
-  - Lidar com sinais (Ctrl-C interrompe heredoc)
+# include "ast.h"
+# include "libft.h"
+# include <stddef.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
-// int setup_heredocs_for_ast(t_ast *root, t_env *env, int *err);
-*/
+int		process_heredocs(t_ast *ast, char **env, int exit_status);
+char	*collect_heredoc(char *delemiter, int expand);
+char	*expand_heredoc_line(char *line, char **env, int exit_status);
+int		has_quotes(char *delimiter);
+char	*remove_quotes(char *delimiter);
 
-#endif /* HEREDOC_H */
+#endif

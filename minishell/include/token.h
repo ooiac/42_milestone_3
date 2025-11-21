@@ -6,7 +6,7 @@
 /*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:47:17 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/13 11:39:46 by fluca            ###   ########.fr       */
+/*   Updated: 2025/11/14 17:04:38 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <stdio.h>
+# include "../include/libft.h"
 
 typedef enum e_token_type
 {

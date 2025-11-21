@@ -1,34 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals_heredoc.c                                  :+:      :+:    :+:   */
+/*   signals_exec.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/20 21:07:01 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/21 19:05:21 by fluca            ###   ########.fr       */
+/*   Created: 2025/11/20 21:03:33 by fluca             #+#    #+#             */
+/*   Updated: 2025/11/20 21:08:30 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "signals.h"
+#include "signal.h"
 
-static  void    handle_sigint_heredoc(int sig)
+static  void    handle_sigint_exec(int sig)
 {
     (void)sig;
     write(1, "\n", 1);
     g_signal_received = SIGINT;
 }
 
-void	setup_signals_heredoc(void)
+static  void    handle_sigquit_exec(int sig)
 {
-    struct sigaction	sa_int;
-    struct sigaction	sa_quit;
+    (void)sig;
+    write(1, "Quit (core dumped)\n", 19);
+    g_signal_received = SIGQUIT;
+}
 
-    sa_int.sa_handler = handle_sigint_heredoc;
+void    setup_signals_exec(void)
+{
+    sa_int.sa_handler = handle_sigint_exec;
     sigemptyset(&sa_int.sa_mask);
     sa_int.sa_flags = 0;
     sigaction(SIGINT, &sa_int, NULL);
-    sa_quit.sa_handler = SIG_IGN;
+    sa_quit.sa_handler = handle_sigquit_exec;
     sigemptyset(&sa_quit.sa_mask);
     sa_quit.sa_flags = 0;
     sigaction(SIGQUIT, &sa_quit, NULL);

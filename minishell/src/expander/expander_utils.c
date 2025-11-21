@@ -1,24 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   expander_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/13 15:25:49 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/13 17:15:32 by fluca            ###   ########.fr       */
+/*   Created: 2025/11/19 19:49:52 by fluca             #+#    #+#             */
+/*   Updated: 2025/11/19 19:56:19 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_H
-# define PARSER_H
+#include "expander.h"
 
-# include "token.h"
-# include "ast.h"
-# include "libft.h"
+int is_quote(char c)
+{
+    return (c == '\'' || c == '"');
+}
 
-int     parser_check_syntax(t_token *tok);
-t_ast   *parse_pipeline(t_token **tok);
-t_ast   *parse_command(t_token **tok);
+char    *get_env_value(char *var, char **env)
+{
+    int i;
+    int len;
 
-#endif
+    if(!var || !env)
+        return (NULL);
+    len = ft_strlen(var);
+    i = 0;
+    while (env[i])
+    {
+        if(ft_strncmp(env[i], var, len) == 0 && env[i][len] == '=')
+            return (&env[i][len + 1]);
+        i++;
+    }
+    return (NULL);
+}
