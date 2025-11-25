@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   signals_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
+/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 21:07:01 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/21 19:05:21 by fluca            ###   ########.fr       */
+/*   Updated: 2025/11/25 20:57:21 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "signals.h"
+#include "../../include/minishell.h"
 
-static  void    handle_sigint_heredoc(int sig)
+static void	handle_sigint_heredoc(int sig)
 {
-    (void)sig;
-    write(1, "\n", 1);
-    g_signal_received = SIGINT;
+	(void)sig;
+	write(1, "\n", 1);
+	g_signal_received = SIGINT;
 }
 
 void	setup_signals_heredoc(void)

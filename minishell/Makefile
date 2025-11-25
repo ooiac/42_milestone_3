@@ -11,6 +11,7 @@ SRCS = main.c \
        src/env/env.c \
        src/env/env_to_envp.c \
        src/executor/exec.c \
+       src/executor/exec_ast.c \
        src/executor/resolve_path.c \
        src/executor/pipeline.c \
        src/executor/pipeline_utils.c \
@@ -22,7 +23,23 @@ SRCS = main.c \
        src/builtins/builtin_cd.c \
        src/builtins/builtin_export.c \
        src/builtins/builtin_unset.c \
-       src/builtins/builtin_exit.c
+       src/builtins/builtin_exit.c \
+       src/signals/signals_prompt.c \
+       src/signals/signals_exec.c \
+       src/signals/signals_heredoc.c \
+       src/signals/signals_utils.c \
+       src/lexer/lexer.c \
+       src/lexer/token_list.c \
+       src/lexer/tokenize_utils.c \
+       src/parser/ast_builder.c \
+       src/parser/ast_utils.c \
+       src/parser/redir_utils.c \
+       src/parser/syntax_check.c \
+       src/expander/expand_string.c \
+       src/expander/expander.c \
+       src/expander/expander_quotes.c \
+       src/expander/expander_utils.c \
+       src/expander/expander_variable.c
 
 OBJS = $(SRCS:.c=.o)
 

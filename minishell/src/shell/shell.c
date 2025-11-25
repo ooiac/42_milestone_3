@@ -6,56 +6,57 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:55:12 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:57:55 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/25 21:04:14 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
-static char	**split_simple(char *line)
+static int	process_line(char *line, t_env **env, int last_status)
 {
-	return (ft_split(line, ' '));
-}
+	t_token	*tokens;
+	t_ast	*ast;
+	char	**envp;
+	int		status;
 
-static void	free_args(char **args)
-{
-	int	i;
-
-	if (!args)
-		return ;
-	i = 0;
-	while (args[i])
+	tokens = lexer_tokenize(line);
+	if (!tokens)
+		return (last_status);
+	if (!parser_check_syntax(tokens))
 	{
-		free(args[i]);
-		i++;
+		ft_putendl_fd("minishell: syntax error", 2);
+		token_clear(&tokens);
+		return (2);
 	}
-	free(args);
+	ast = parse_pipeline(&tokens);
+	token_clear(&tokens);
+	if (!ast)
+		return (last_status);
+	envp = env_to_envp(*env);
+	expand_ast(ast, envp, last_status);
+	free_envp(envp);
+	status = exec_ast(ast, env);
+	ast_clear(&ast);
+	return (status);
 }
 
 void	start_shell(t_env *env)
 {
 	char	*line;
-	char	**args;
 	int		status;
 
+	status = 0;
 	while (1)
 	{
 		line = readline("minishell> ");
 		if (!line)
 			break ;
 		if (*line)
-			add_history(line);
-		args = split_simple(line);
-		free(line);
-		if (args && args[0])
 		{
-			if (is_builtin(args[0]))
-				status = exec_builtin(args, &env);
-			else
-				status = run_single_command(args, env);
-			(void)status;
+			add_history(line);
+			status = process_line(line, &env, status);
 		}
-		free_args(args);
+		free(line);
 	}
 	ft_putendl_fd("exit", 1);
 }

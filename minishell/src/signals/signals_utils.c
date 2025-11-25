@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   signals_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
+/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 21:08:53 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/20 21:48:51 by fluca            ###   ########.fr       */
+/*   Updated: 2025/11/25 20:57:21 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "signals.h"
+#include "../../include/minishell.h"
 
 void    setup_signals_default(void)
 {

@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:44:30 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 15:21:53 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/25 21:04:14 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@
 # include <sys/wait.h>
 
 # include "../libft/libft.h"
+# include "token.h"
+# include "ast.h"
+# include "parser.h"
+# include "expander.h"
 
 typedef struct	s_env
 {
@@ -45,6 +49,7 @@ void	free_envp(char **envp);
 char	*resolve_executable(const char *cmd, t_env *env);
 int		run_single_command(char **av, t_env *env);
 int		run_pipeline(char ***cmds, t_env *env);
+int		exec_ast(t_ast *ast, t_env **env);
 
 /* pipeline helpers */
 int		**create_pipes(int n);
@@ -66,5 +71,12 @@ int		builtin_exit(char **args);
 
 /* main loop */
 void	start_shell(t_env *env);
+
+/* signals */
+extern volatile sig_atomic_t	g_signal_received;
+void	setup_signals_prompt(void);
+void	setup_signals_exec(void);
+void	setup_signals_heredoc(void);
+void	setup_signals_default(void);
 
 #endif
