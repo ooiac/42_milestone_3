@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 17:36:07 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:44:36 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 15:19:54 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ t_env	*env_from_envp(char **envp)
 	i = 0;
 	while (envp && envp[i])
 	{
-		node = new_env_node(envp[i])
+		node = new_env_node(envp[i]);
 		if (!node)
 			return (free_env(head), NULL);
 		if (!head)
@@ -80,4 +80,5 @@ char	*env_get(t_env *env, const char *key)
 			return (env->val);
 		env = env->next;
 	}
+	return (NULL);
 }

@@ -14,7 +14,7 @@ SRCS = ft_strlen.c ft_memset.c ft_bzero.c ft_isalpha.c \
        ft_strjoin.c ft_strtrim.c ft_split.c ft_itoa.c \
        ft_strmapi.c ft_striteri.c ft_putchar_fd.c \
        ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
-       ft_uitoa.c
+       ft_uitoa.c ft_strcmp.c \
 
 # Arquivos fontes de bônus (listas)
 BONUS_SRCS = ft_lstadd_back_bonus.c ft_lstadd_front_bonus.c \

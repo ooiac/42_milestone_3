@@ -6,11 +6,11 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:49 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:49:46 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 15:35:40 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft"
+#include "libft.h"
 
 int	ft_strcmp(const char *s1, const char *s2)
 {

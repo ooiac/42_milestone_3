@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:37:58 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:47:46 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 15:31:34 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int	add_or_update_env(char *arg, t_env **env)
 	t_env	*new;
 	t_env	*tmp;
 
-	equal = ft_strchr(arg, '=')
+	equal = ft_strchr(arg, '=');
 	if (!equal)
 		return (0);
 	key = ft_substr(arg, 0, equal - arg);
@@ -71,7 +71,7 @@ int	builtin_export(char **args, t_env **env)
 	while (args[i])
 	{
 		add_or_update_env(args[i], env);
-		i++
+		i++;
 	}
 	return (0);
 }

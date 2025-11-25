@@ -6,13 +6,13 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:05 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:38:12 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 15:32:32 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	remove_env_node(char *key, t_key **env)
+static void	remove_env_node(char *key, t_env **env)
 {
 	t_env	*tmp;
 	t_env	*prev;

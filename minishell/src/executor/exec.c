@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:21 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:43:57 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 15:26:06 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	translate_status(int status)
 {
-	if (WIFIEXITED(status))
+	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	if (WIFSIGNALED(status))
 		return (128 + WTERMSIG(status));
@@ -40,9 +40,9 @@ static void	run_child(char **av, t_env *env, char *path)
 
 static void	ft_err_msg(const char *cmd, const char *msg)
 {
-	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd((char *)cmd, 2);
 	ft_putstr_fd(": ", 2);
-	ft_putendl_fd(msg, 2);
+	ft_putendl_fd((char *)msg, 2);
 }
 
 int	run_single_command(char **av, t_env *env)

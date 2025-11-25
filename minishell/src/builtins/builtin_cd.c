@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:37:46 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:49:11 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 15:31:13 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	builtin_cd(char **args, t_env **env)
 	(void)env;
 	if (!args[1])
 	{
-		path = getenv("HOME")
+		path = getenv("HOME");
 		if (!path)
 		{
 			ft_putendl_fd("cd: HOME not set", 2);
@@ -34,4 +34,5 @@ int	builtin_cd(char **args, t_env **env)
 		perror(path);
 		return (1);
 	}
+	return (0);
 }

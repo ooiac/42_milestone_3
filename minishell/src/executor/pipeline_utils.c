@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:24 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 13:38:24 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/20 15:26:37 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	exec_in_pipeline(char **cmd, int **pipes, int i, int n_cmds, t_env *env)
 	if (!path)
 	{
 		ft_putstr_fd(cmd[0], 2);
-		ft_putendl_fd(": command not found", 2)
+		ft_putendl_fd(": command not found", 2);
 		exit(127);
 	}
 	envp = env_to_envp(env);
