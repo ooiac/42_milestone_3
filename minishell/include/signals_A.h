@@ -1,39 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   signals.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
+<<<<<<< HEAD:minishell/include/minishell.h
 /*   Created: 2025/11/10 17:44:30 by caida-si          #+#    #+#             */
 /*   Updated: 2025/11/20 15:21:53 by caida-si         ###   ########.fr       */
+=======
+/*   Created: 2025/11/20 20:47:31 by fluca             #+#    #+#             */
+/*   Updated: 2025/11/20 21:45:58 by fluca            ###   ########.fr       */
+>>>>>>> origin/fluca2:minishell/include/signals_A.h
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef SIGNALS_H
+# define SIGNALS_H
 
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <signal.h>
-# include <fcntl.h>
-# include <errno.h>
-# include <string.h>
-# include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/wait.h>
 
-# include "../libft/libft.h"
+extern volatile sig_atomic_t	g_signal_received;
 
-typedef struct	s_env
-{
-	char			*key;
-	char			*val;
-	struct s_env	*next;
-}	t_env;
+void	setup_signals_prompt(void);
+void	setup_signals_exec(void);
+void	setup_signals_heredoc(void);
+void	setup_signals_default(void);
 
+<<<<<<< HEAD:minishell/include/minishell.h
 /* env */
 t_env	*env_from_envp(char **envp);
 void	free_env(t_env *env);
@@ -68,3 +68,6 @@ int		builtin_exit(char **args);
 void	start_shell(t_env *env);
 
 #endif
+=======
+#endif
+>>>>>>> origin/fluca2:minishell/include/signals_A.h
