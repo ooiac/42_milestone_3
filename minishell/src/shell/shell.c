@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:55:12 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/25 21:04:14 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/27 17:04:16 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	process_line(char *line, t_env **env, int last_status)
 	tokens = lexer_tokenize(line);
 	if (!tokens)
 		return (last_status);
-	if (!parser_check_syntax(tokens))
+	if (parser_check_syntax(tokens) != 0)
 	{
 		ft_putendl_fd("minishell: syntax error", 2);
 		token_clear(&tokens);

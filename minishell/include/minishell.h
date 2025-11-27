@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:44:30 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/25 21:04:14 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/27 16:58:03 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # include "../libft/libft.h"
 # include "token.h"
 # include "ast.h"
+# include "lexer.h"
 # include "parser.h"
 # include "expander.h"
 
