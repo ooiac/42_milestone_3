@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
+/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:25:12 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/13 17:13:38 by fluca            ###   ########.fr       */
+/*   Updated: 2025/11/27 17:49:33 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ typedef struct s_redir
 {
 	t_token_type		type;
 	char				*target;
-	struct s_redir	*next;
+	int					heredoc_fd;
+	struct s_redir		*next;
 }	t_redir;
 
 typedef struct s_ast

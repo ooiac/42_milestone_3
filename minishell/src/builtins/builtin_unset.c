@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:05 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 15:32:32 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/27 18:19:45 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void	remove_env_node(char *key, t_env **env)
 
 int	builtin_unset(char **args, t_env **env)
 {
-	int i;
+	int	i;
 
 	if (!args[1])
 		return (0);

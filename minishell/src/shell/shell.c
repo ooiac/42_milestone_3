@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:55:12 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/27 17:04:16 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/27 17:49:33 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@ static int	process_line(char *line, t_env **env, int last_status)
 	if (!ast)
 		return (last_status);
 	envp = env_to_envp(*env);
+	if (process_heredocs(ast, envp, last_status) != 0)
+	{
+		free_envp(envp);
+		ast_clear(&ast);
+		return (1);
+	}
 	expand_ast(ast, envp, last_status);
 	free_envp(envp);
 	status = exec_ast(ast, env);

@@ -39,7 +39,11 @@ SRCS = main.c \
        src/expander/expander.c \
        src/expander/expander_quotes.c \
        src/expander/expander_utils.c \
-       src/expander/expander_variable.c
+       src/expander/expander_variable.c \
+       src/heredoc/heredoc.c \
+       src/heredoc/heredoc_collect.c \
+       src/heredoc/heredoc_expand.c \
+       src/heredoc/heredoc_utils.c
 
 OBJS = $(SRCS:.c=.o)
 

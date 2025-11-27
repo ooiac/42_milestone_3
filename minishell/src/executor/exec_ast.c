@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 21:02:36 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/25 21:03:18 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/11/27 17:49:33 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,11 @@ static int	apply_redirections(t_redir *redirs)
 				return (perror(redirs->target), -1);
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
+		}
+		else if (redirs->type == T_HEREDOC && redirs->heredoc_fd >= 0)
+		{
+			dup2(redirs->heredoc_fd, STDIN_FILENO);
+			close(redirs->heredoc_fd);
 		}
 		redirs = redirs->next;
 	}
@@ -109,6 +114,17 @@ int	exec_ast(t_ast *ast, t_env **env)
 	if (ast->type == NODE_CMD)
 	{
 		if (is_builtin(ast->argv[0]))
+		{
+			saved_stdin = dup(STDIN_FILENO);
+			saved_stdout = dup(STDOUT_FILENO);
+			status = exec_simple_command(ast, env);
+			dup2(saved_stdin, STDIN_FILENO);
+			dup2(saved_stdout, STDOUT_FILENO);
+			close(saved_stdin);
+			close(saved_stdout);
+			return (status);
+		}
+		if (ast->redirs)
 		{
 			saved_stdin = dup(STDIN_FILENO);
 			saved_stdout = dup(STDOUT_FILENO);
