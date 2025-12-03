@@ -3,22 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/12 18:38:13 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/27 18:03:22 by caida-si         ###   ########.fr       */
+/*   Created: 2025/12/02 14:03:44 by fluca             #+#    #+#             */
+/*   Updated: 2025/12/02 14:04:01 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 
-t_token	*lexer_tokenize(const char *line)
+static int	handle_operator(const char *line, int *i, t_token **head)
 {
-	t_token			*head;
-	int				i;
 	t_token_type	type;
 	char			*op;
-	char			*word;
+
+	op = read_operator(line, i, &type);
+	token_add_back(head, token_new(type, op));
+	return (0);
+}
+
+static int	handle_word(const char *line, int *i, t_token **head)
+{
+	char	*word;
+
+	word = read_word(line, i);
+	if (!word)
+		return (-1);
+	token_add_back(head, token_new(T_WORD, word));
+	return (0);
+}
+
+t_token	*lexer_tokenize(const char *line)
+{
+	t_token	*head;
+	int		i;
 
 	head = NULL;
 	i = 0;
@@ -27,17 +45,9 @@ t_token	*lexer_tokenize(const char *line)
 		if (is_whitespace(line[i]))
 			i++;
 		else if (is_operator_char(line[i]))
-		{
-			op = read_operator(line, &i, &type);
-			token_add_back(&head, token_new(type, op));
-		}
-		else
-		{
-			word = read_word(line, &i);
-			if (!word)
-				return (token_clear(&head), NULL);
-			token_add_back(&head, token_new(T_WORD, word));
-		}
+			handle_operator(line, &i, &head);
+		else if (handle_word(line, &i, &head) < 0)
+			return (token_clear(&head), NULL);
 	}
 	return (head);
 }

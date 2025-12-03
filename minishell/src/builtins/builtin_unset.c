@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_unset.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:05 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/27 18:19:45 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/02 12:16:04 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+static void	free_env_node(t_env *node)
+{
+	free(node->key);
+	free(node->val);
+	free(node);
+}
 
 static void	remove_env_node(char *key, t_env **env)
 {
@@ -23,9 +30,7 @@ static void	remove_env_node(char *key, t_env **env)
 	{
 		tmp = *env;
 		*env = (*env)->next;
-		free(tmp->key);
-		free(tmp->val);
-		free(tmp);
+		free_env_node(tmp);
 		return ;
 	}
 	prev = *env;
@@ -35,9 +40,7 @@ static void	remove_env_node(char *key, t_env **env)
 		if (ft_strcmp(tmp->key, key) == 0)
 		{
 			prev->next = tmp->next;
-			free(tmp->key);
-			free(tmp->val);
-			free(tmp);
+			free_env_node(tmp);
 			return ;
 		}
 		prev = tmp;

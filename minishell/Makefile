@@ -11,7 +11,9 @@ SRCS = main.c \
        src/env/env.c \
        src/env/env_to_envp.c \
        src/executor/exec.c \
-       src/executor/exec_ast.c \
+       src/executor/exec_ast_1.c \
+       src/executor/exec_ast_2.c \
+       src/executor/exec_ast_3.c \
        src/executor/resolve_path.c \
        src/executor/pipeline.c \
        src/executor/pipeline_utils.c \
@@ -30,8 +32,11 @@ SRCS = main.c \
        src/signals/signals_utils.c \
        src/lexer/lexer.c \
        src/lexer/token_list.c \
-       src/lexer/tokenize_utils.c \
-       src/parser/ast_builder.c \
+       src/lexer/tokenize_utils_1.c \
+       src/lexer/tokenize_utils_2.c \
+       src/lexer/tokenize_utils_3.c \
+       src/parser/ast_builder_1.c \
+       src/parser/ast_builder_2.c \
        src/parser/ast_utils.c \
        src/parser/redir_utils.c \
        src/parser/syntax_check.c \
@@ -41,7 +46,8 @@ SRCS = main.c \
        src/expander/expander_utils.c \
        src/expander/expander_variable.c \
        src/heredoc/heredoc.c \
-       src/heredoc/heredoc_collect.c \
+       src/heredoc/heredoc_collect_1.c \
+       src/heredoc/heredoc_collect_2.c \
        src/heredoc/heredoc_expand.c \
        src/heredoc/heredoc_utils.c
 

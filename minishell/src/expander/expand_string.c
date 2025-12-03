@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   expand_string.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 16:19:38 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/27 18:08:45 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:10:45 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expander.h"
+
+typedef struct s_exp_ctx
+{
+	char	**env;
+	int		exit_status;
+}	t_exp_ctx;
 
 static char	*append_char(char *result, char c)
 {
@@ -60,7 +66,7 @@ static char	*process_single_quote(char *str, int *i, char *result)
 }
 
 static char	*process_double_quote(char *str, int *i, char *result,
-			char **env, int exit_status)
+			t_exp_ctx *ctx)
 {
 	char	*var_value;
 
@@ -69,7 +75,7 @@ static char	*process_double_quote(char *str, int *i, char *result,
 	{
 		if (str[*i] == '$')
 		{
-			var_value = expand_variable(str, i, env, exit_status);
+			var_value = expand_variable(str, i, ctx->env, ctx->exit_status);
 			result = append_str(result, var_value);
 		}
 		else
@@ -85,10 +91,13 @@ static char	*process_double_quote(char *str, int *i, char *result,
 
 char	*expand_string(char *str, char **env, int exit_status)
 {
-	char	*result;
-	char	*var_value;
-	int		i;
+	char		*result;
+	char		*var_value;
+	int			i;
+	t_exp_ctx	ctx;
 
+	ctx.env = env;
+	ctx.exit_status = exit_status;
 	result = ft_strdup("");
 	i = 0;
 	while (str[i])
@@ -96,7 +105,7 @@ char	*expand_string(char *str, char **env, int exit_status)
 		if (str[i] == '\'')
 			result = process_single_quote(str, &i, result);
 		else if (str[i] == '"')
-			result = process_double_quote(str, &i, result, env, exit_status);
+			result = process_double_quote(str, &i, result, &ctx);
 		else if (str[i] == '$')
 		{
 			var_value = expand_variable(str, &i, env, exit_status);

@@ -3,14 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:37:58 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 15:31:34 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/02 15:30:11 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+static int	is_valid_identifier(char *str)
+{
+	int	i;
+
+	if (!str || !str[0])
+		return (0);
+	if (!ft_isalpha(str[0]) && str[0] != '_')
+		return (0);
+	i = 1;
+	while (str[i] && str[i] != '=')
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 static void	print_sorted_env(t_env *env)
 {
@@ -26,12 +44,22 @@ static void	print_sorted_env(t_env *env)
 	}
 }
 
+static void	create_env_node(char *key, char *val, t_env **env)
+{
+	t_env	*new;
+
+	new = malloc(sizeof(t_env));
+	new->key = key;
+	new->val = val;
+	new->next = *env;
+	*env = new;
+}
+
 static int	add_or_update_env(char *arg, t_env **env)
 {
 	char	*equal;
 	char	*key;
 	char	*val;
-	t_env	*new;
 	t_env	*tmp;
 
 	equal = ft_strchr(arg, '=');
@@ -50,28 +78,34 @@ static int	add_or_update_env(char *arg, t_env **env)
 		}
 		tmp = tmp->next;
 	}
-	new = malloc(sizeof(t_env));
-	new->key = key;
-	new->val = val;
-	new->next = *env;
-	*env = new;
+	create_env_node(key, val, env);
 	return (0);
 }
 
 int	builtin_export(char **args, t_env **env)
 {
 	int	i;
+	int	ret;
 
 	if (!args[1])
 	{
 		print_sorted_env(*env);
 		return (0);
 	}
+	ret = 0;
 	i = 1;
 	while (args[i])
 	{
-		add_or_update_env(args[i], env);
+		if (!is_valid_identifier(args[i]))
+		{
+			ft_putstr_fd("minishell: export: `", 2);
+			ft_putstr_fd(args[i], 2);
+			ft_putendl_fd("': not a valid identifier", 2);
+			ret = 1;
+		}
+		else
+			add_or_update_env(args[i], env);
 		i++;
 	}
-	return (0);
+	return (ret);
 }

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ast_builder.c                                      :+:      :+:    :+:   */
+/*   ast_builder_1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 18:11:50 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/27 18:04:39 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/02 14:45:27 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-static int	is_redir_token(t_token_type type)
+int	is_redir_token(t_token_type type)
 {
 	return (type == T_REDIR_IN || type == T_REDIR_OUT
 		|| type == T_REDIR_APPEND || type == T_HEREDOC);
@@ -65,7 +65,7 @@ static int	process_token(t_token **tok, char **argv, int i)
 	return (i);
 }
 
-static char	**extract_argv(t_token **tok)
+char	**extract_argv(t_token **tok)
 {
 	char	**argv;
 	int		count;
@@ -80,57 +80,4 @@ static char	**extract_argv(t_token **tok)
 		i = process_token(tok, argv, i);
 	argv[i] = NULL;
 	return (argv);
-}
-
-static t_redir	*extract_redirs(t_token **tok)
-{
-	t_redir	*head;
-	t_redir	*new;
-
-	head = NULL;
-	while (*tok && (*tok)->type != T_PIPE)
-	{
-		if ((*tok)->type == T_REDIR_IN || (*tok)->type == T_REDIR_OUT
-			|| (*tok)->type == T_REDIR_APPEND || (*tok)->type == T_HEREDOC)
-		{
-			new = redir_new((*tok)->type, ft_strdup((*tok)->next->value));
-			redir_add_back(&head, new);
-			*tok = (*tok)->next;
-		}
-		*tok = (*tok)->next;
-	}
-	return (head);
-}
-
-t_ast	*parse_command(t_token **tok)
-{
-	t_ast	*node;
-	t_token	*start;
-
-	node = ast_new_cmd();
-	if (!node)
-		return (NULL);
-	start = *tok;
-	node->argv = extract_argv(&start);
-	start = *tok;
-	node->redirs = extract_redirs(&start);
-	*tok = start;
-	return (node);
-}
-
-t_ast	*parse_pipeline(t_token **tok)
-{
-	t_ast	*left;
-	t_ast	*pipe_node;
-
-	left = parse_command(tok);
-	if (!left)
-		return (NULL);
-	if (*tok && (*tok)->type == T_PIPE)
-	{
-		*tok = (*tok)->next;
-		pipe_node = ast_new_pipe(left, parse_pipeline(tok));
-		return (pipe_node);
-	}
-	return (left);
 }

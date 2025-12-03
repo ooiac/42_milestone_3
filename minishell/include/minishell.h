@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:44:30 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/27 18:19:45 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:10:45 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,22 @@ char	*resolve_executable(const char *cmd, t_env *env);
 int		run_single_command(char **av, t_env *env);
 int		run_pipeline(char ***cmds, t_env *env);
 int		exec_ast(t_ast *ast, t_env **env);
+int		exec_pipeline_recursive(t_ast *ast, t_env *env, int input_fd);
+int		apply_redirections(t_redir *redirs);
+int		exec_simple_command(t_ast *ast, t_env **env);
 
 /* pipeline helpers */
+typedef struct s_pipe_ctx
+{
+	int		**pipes;
+	int		i;
+	int		n_cmds;
+	t_env	*env;
+}	t_pipe_ctx;
+
 int		**create_pipes(int n);
 void	close_all_pipes(int **pipes, int n);
-void	exec_in_pipeline(char **cmd, int **pipes, int i, int n_cmds,
-						t_env *env);
+void	exec_in_pipeline(char **cmd, t_pipe_ctx *ctx);
 int		wait_all(pid_t *pids, int n);
 
 /* builtins */

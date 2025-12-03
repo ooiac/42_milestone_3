@@ -3,40 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:24 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 15:26:37 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:10:45 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
-static void	setup_pipe_fds(int **pipes, int i, int n_cmds)
+static void	setup_pipe_fds(t_pipe_ctx *ctx)
 {
-	if (i > 0)
-		dup2(pipes[i - 1][0], STDIN_FILENO);
-	if (i < n_cmds - 1)
-		dup2(pipes[i][1], STDOUT_FILENO);
+	if (ctx->i > 0)
+		dup2(ctx->pipes[ctx->i - 1][0], STDIN_FILENO);
+	if (ctx->i < ctx->n_cmds - 1)
+		dup2(ctx->pipes[ctx->i][1], STDOUT_FILENO);
 }
 
-void	exec_in_pipeline(char **cmd, int **pipes, int i, int n_cmds, t_env *env)
+void	exec_in_pipeline(char **cmd, t_pipe_ctx *ctx)
 {
 	char	*path;
 	char	**envp;
 
-	setup_pipe_fds(pipes, i, n_cmds);
-	close_all_pipes(pipes, n_cmds - 1);
+	setup_pipe_fds(ctx);
+	close_all_pipes(ctx->pipes, ctx->n_cmds - 1);
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	path = resolve_executable(cmd[0], env);
+	path = resolve_executable(cmd[0], ctx->env);
 	if (!path)
 	{
 		ft_putstr_fd(cmd[0], 2);
 		ft_putendl_fd(": command not found", 2);
 		exit(127);
 	}
-	envp = env_to_envp(env);
+	envp = env_to_envp(ctx->env);
 	if (!envp)
 		exit(1);
 	execve(path, cmd, envp);

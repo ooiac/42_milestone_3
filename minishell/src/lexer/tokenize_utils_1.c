@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   tokenize_utils_1.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/13 15:25:49 by fluca             #+#    #+#             */
-/*   Updated: 2025/12/02 14:17:43 by fluca            ###   ########.fr       */
+/*   Created: 2025/11/12 18:21:23 by fluca             #+#    #+#             */
+/*   Updated: 2025/12/02 14:44:33 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_H
-# define PARSER_H
+#include "lexer.h"
 
-# include "token.h"
-# include "ast.h"
-# include "libft.h"
+int	is_whitespace(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n');
+}
 
-int		parser_check_syntax(t_token *tok);
-t_ast	*parse_pipeline(t_token **tok);
-t_ast	*parse_command(t_token **tok);
-int		is_redir_token(t_token_type type);
-char	**extract_argv(t_token **tok);
-t_redir	*extract_redirs(t_token **tok);
+int	is_operator_char(char c)
+{
+	return (c == '|' || c == '<' || c == '>');
+}
 
-#endif
+void	skip_quoted(const char *line, int *i, char quote_char)
+{
+	while (line[*i] && line[*i] != quote_char)
+		(*i)++;
+	if (line[*i] == quote_char)
+		(*i)++;
+}

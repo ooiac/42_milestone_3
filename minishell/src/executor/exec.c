@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:21 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 15:26:06 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:10:45 by fluca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,22 +76,27 @@ int	run_single_command(char **av, t_env *env)
 
 int	run_pipeline(char ***cmds, t_env *env)
 {
-	int		**pipes;
-	pid_t	*pids;
-	int		n_cmds;
-	int		i;
+	int			**pipes;
+	pid_t		*pids;
+	int			n_cmds;
+	int			i;
+	t_pipe_ctx	ctx;
 
 	n_cmds = 0;
 	while (cmds[n_cmds])
 		n_cmds++;
 	pipes = create_pipes(n_cmds - 1);
 	pids = malloc(sizeof(pid_t) * n_cmds);
+	ctx.pipes = pipes;
+	ctx.n_cmds = n_cmds;
+	ctx.env = env;
 	i = 0;
 	while (i < n_cmds)
 	{
+		ctx.i = i;
 		pids[i] = fork();
 		if (pids[i] == 0)
-			exec_in_pipeline(cmds[i], pipes, i, n_cmds, env);
+			exec_in_pipeline(cmds[i], &ctx);
 		i++;
 	}
 	close_all_pipes(pipes, n_cmds - 1);
