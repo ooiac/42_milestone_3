@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_builder_1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
+/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 18:11:50 by fluca             #+#    #+#             */
-/*   Updated: 2025/12/02 14:45:27 by fluca            ###   ########.fr       */
+/*   Updated: 2025/12/10 15:22:53 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,22 @@ static int	count_words(t_token *tok)
 	int	count;
 
 	count = 0;
-	while (tok && tok->type != T_PIPE)
+	while (tok && !is_separator(tok->type))
 	{
-		if (tok->type == T_WORD)
-			count++;
 		if (tok->type == T_REDIR_IN || tok->type == T_REDIR_OUT
 			|| tok->type == T_REDIR_APPEND || tok->type == T_HEREDOC)
 		{
 			tok = tok->next;
 			if (tok)
-			{
-				count--;
 				tok = tok->next;
-				continue ;
-			}
 		}
-		tok = tok->next;
+		else if (tok->type == T_WORD)
+		{
+			count++;
+			tok = tok->next;
+		}
+		else
+			tok = tok->next;
 	}
 	return (count);
 }
@@ -76,7 +76,7 @@ char	**extract_argv(t_token **tok)
 	if (!argv)
 		return (NULL);
 	i = 0;
-	while (*tok && (*tok)->type != T_PIPE)
+	while (*tok && !is_separator((*tok)->type))
 		i = process_token(tok, argv, i);
 	argv[i] = NULL;
 	return (argv);

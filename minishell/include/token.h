@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
+/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:47:17 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/14 17:04:38 by fluca            ###   ########.fr       */
+/*   Updated: 2025/12/10 15:22:53 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ typedef enum e_token_type
 	T_REDIR_OUT,
 	T_REDIR_APPEND,
 	T_HEREDOC,
+	T_AND,
+	T_OR,
 }	t_token_type;
 
 typedef struct s_token

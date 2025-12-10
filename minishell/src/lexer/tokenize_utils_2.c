@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize_utils_2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
+/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 14:11:54 by fluca             #+#    #+#             */
-/*   Updated: 2025/12/03 13:10:45 by fluca            ###   ########.fr       */
+/*   Updated: 2025/12/10 15:22:53 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,33 @@ static void	handle_greater(const char *line, int *i, t_token_type *type)
 	}
 }
 
-static char	*read_pipe(const char *line, int *i, t_token_type *type)
+static char	*read_pipe_or_or(const char *line, int *i, t_token_type *type)
 {
 	int	start;
 
 	start = *i;
-	if (line[*i] == '|')
+	if (line[*i] == '|' && line[*i + 1] == '|')
+	{
+		*type = T_OR;
+		(*i) += 2;
+	}
+	else if (line[*i] == '|')
 	{
 		*type = T_PIPE;
 		(*i)++;
+	}
+	return (ft_substr(line, (unsigned int)start, (size_t)(*i - start)));
+}
+
+static char	*read_and(const char *line, int *i, t_token_type *type)
+{
+	int	start;
+
+	start = *i;
+	if (line[*i] == '&' && line[*i + 1] == '&')
+	{
+		*type = T_AND;
+		(*i) += 2;
 	}
 	return (ft_substr(line, (unsigned int)start, (size_t)(*i - start)));
 }
@@ -59,7 +77,9 @@ char	*read_operator(const char *line, int *i, t_token_type *type)
 
 	start = *i;
 	if (line[*i] == '|')
-		return (read_pipe(line, i, type));
+		return (read_pipe_or_or(line, i, type));
+	if (line[*i] == '&')
+		return (read_and(line, i, type));
 	if (line[*i] == '<')
 		handle_less(line, i, type);
 	else if (line[*i] == '>')

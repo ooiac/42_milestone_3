@@ -12,12 +12,6 @@
 
 #include "expander.h"
 
-typedef struct s_exp_ctx
-{
-	char	**env;
-	int		exit_status;
-}	t_exp_ctx;
-
 static char	*append_char(char *result, char c)
 {
 	char	*new;
@@ -37,18 +31,6 @@ static char	*append_char(char *result, char c)
 	}
 	new[len] = c;
 	new[len + 1] = '\0';
-	return (new);
-}
-
-static char	*append_str(char *result, char *str)
-{
-	char	*new;
-
-	if (!str)
-		return (result);
-	new = ft_strjoin(result, str);
-	free(result);
-	free(str);
 	return (new);
 }
 
@@ -89,10 +71,30 @@ static char	*process_double_quote(char *str, int *i, char *result,
 	return (result);
 }
 
+static char	*process_char(char *str, int *i, char *result, t_exp_ctx *ctx)
+{
+	char	*var_value;
+
+	if (str[*i] == '\'')
+		result = process_single_quote(str, i, result);
+	else if (str[*i] == '"')
+		result = process_double_quote(str, i, result, ctx);
+	else if (str[*i] == '$')
+	{
+		var_value = expand_variable(str, i, ctx->env, ctx->exit_status);
+		result = append_str(result, var_value);
+	}
+	else
+	{
+		result = append_char(result, str[*i]);
+		(*i)++;
+	}
+	return (result);
+}
+
 char	*expand_string(char *str, char **env, int exit_status)
 {
 	char		*result;
-	char		*var_value;
 	int			i;
 	t_exp_ctx	ctx;
 
@@ -101,21 +103,6 @@ char	*expand_string(char *str, char **env, int exit_status)
 	result = ft_strdup("");
 	i = 0;
 	while (str[i])
-	{
-		if (str[i] == '\'')
-			result = process_single_quote(str, &i, result);
-		else if (str[i] == '"')
-			result = process_double_quote(str, &i, result, &ctx);
-		else if (str[i] == '$')
-		{
-			var_value = expand_variable(str, &i, env, exit_status);
-			result = append_str(result, var_value);
-		}
-		else
-		{
-			result = append_char(result, str[i]);
-			i++;
-		}
-	}
+		result = process_char(str, &i, result, &ctx);
 	return (result);
 }

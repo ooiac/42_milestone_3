@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 17:41:41 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/27 18:04:39 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/10 15:22:53 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ void	ast_clear(t_ast **ast)
 {
 	if (!ast || !*ast)
 		return ;
-	if ((*ast)->type == NODE_PIPE)
+	if ((*ast)->type == NODE_PIPE || (*ast)->type == NODE_AND
+		|| (*ast)->type == NODE_OR)
 	{
 		ast_clear(&(*ast)->left);
 		ast_clear(&(*ast)->right);

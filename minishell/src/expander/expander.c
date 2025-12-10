@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 14:44:03 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/27 18:19:45 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/10 15:22:53 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	expand_ast(t_ast *ast, char **env, int exit_status)
 {
 	if (!ast)
 		return ;
-	if (ast->type == NODE_PIPE)
+	if (ast->type == NODE_PIPE || ast->type == NODE_AND || ast->type == NODE_OR)
 	{
 		expand_ast(ast->left, env, exit_status);
 		expand_ast(ast->right, env, exit_status);

@@ -15,6 +15,14 @@
 
 # include "ast.h"
 
+typedef struct s_exp_ctx
+{
+	char	**env;
+	int		exit_status;
+}			t_exp_ctx;
+
+char	*append_str(char *result, char *str);
+
 void	expand_ast(t_ast *ast, char **env, int exit_status);
 char	*expand_string(char *str, char **env, int exit_status);
 char	*expand_variable(char *str, int *i, char **env, int exit_status);

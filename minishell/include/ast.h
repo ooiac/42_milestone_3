@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:25:12 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/27 17:49:33 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/10 15:22:53 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 typedef enum e_node_type
 {
 	NODE_CMD,
-	NODE_PIPE
+	NODE_PIPE,
+	NODE_AND,
+	NODE_OR
 }	t_node_type;
 
 typedef struct s_redir
@@ -40,6 +42,8 @@ typedef struct s_ast
 
 t_ast	*ast_new_cmd(void);
 t_ast	*ast_new_pipe(t_ast *left, t_ast *right);
+t_ast	*ast_new_and(t_ast *left, t_ast *right);
+t_ast	*ast_new_or(t_ast *left, t_ast *right);
 void	ast_clear(t_ast **ast);
 t_redir	*redir_new(t_token_type type, char *target);
 void	redir_add_back(t_redir **lst, t_redir *new);

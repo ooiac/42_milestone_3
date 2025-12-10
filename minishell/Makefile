@@ -37,10 +37,14 @@ SRCS = main.c \
        src/lexer/tokenize_utils_3.c \
        src/parser/ast_builder_1.c \
        src/parser/ast_builder_2.c \
+       src/parser/ast_builder_3.c \
+       src/parser/ast_builder_utils.c \
        src/parser/ast_utils.c \
+       src/parser/ast_logical.c \
        src/parser/redir_utils.c \
        src/parser/syntax_check.c \
        src/expander/expand_string.c \
+       src/expander/expand_string_utils.c \
        src/expander/expander.c \
        src/expander/expander_quotes.c \
        src/expander/expander_utils.c \

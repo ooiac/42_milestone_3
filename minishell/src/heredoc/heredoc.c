@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 20:17:30 by fluca             #+#    #+#             */
-/*   Updated: 2025/11/27 17:49:33 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/10 15:22:53 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	process_heredocs(t_ast *ast, char **env, int exit_status)
 {
 	if (!ast)
 		return (0);
-	if (ast->type == NODE_PIPE)
+	if (ast->type == NODE_PIPE || ast->type == NODE_AND || ast->type == NODE_OR)
 	{
 		if (process_heredocs(ast->left, env, exit_status) != 0)
 			return (-1);
