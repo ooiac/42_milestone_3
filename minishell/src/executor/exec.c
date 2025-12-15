@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
+/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:21 by caida-si          #+#    #+#             */
-/*   Updated: 2025/12/03 13:10:45 by fluca            ###   ########.fr       */
+/*   Updated: 2025/12/15 16:23:04 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,22 @@ static void	run_child(char **av, t_env *env, char *path)
 	exit(127);
 }
 
-static void	ft_err_msg(const char *cmd, const char *msg)
+static int	handle_exec_error(char *cmd)
 {
-	ft_putstr_fd((char *)cmd, 2);
+	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": ", 2);
-	ft_putendl_fd((char *)msg, 2);
+	if (errno == EACCES)
+	{
+		ft_putendl_fd("Permission denied", 2);
+		return (126);
+	}
+	else if (errno == EISDIR)
+	{
+		ft_putendl_fd("Is a directory", 2);
+		return (126);
+	}
+	ft_putendl_fd("command not found", 2);
+	return (127);
 }
 
 int	run_single_command(char **av, t_env *env)
@@ -55,10 +66,7 @@ int	run_single_command(char **av, t_env *env)
 		return (0);
 	path = resolve_executable(av[0], env);
 	if (!path)
-	{
-		ft_err_msg(av[0], "command not found");
-		return (127);
-	}
+		return (handle_exec_error(av[0]));
 	pid = fork();
 	if (pid < 0)
 	{

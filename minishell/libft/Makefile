@@ -35,19 +35,23 @@ all: $(NAME)
 
 # Regra para compilar o arquivo .a só com arquivos principais
 $(NAME): $(OBJS)
-	ar rcs $(NAME) $(OBJS)
+	@ar rcs $(NAME) $(OBJS)
+
+# Compilação silenciosa dos objetos
+%.o: %.c
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 # Regra para compilar a biblioteca com os bônus incluídos
 bonus: $(OBJS) $(BONUS_OBJS)
-	ar rcs $(NAME) $(OBJS) $(BONUS_OBJS)
+	@ar rcs $(NAME) $(OBJS) $(BONUS_OBJS)
 
 # Limpa arquivos objeto (.o)
 clean:
-	rm -f $(OBJS) $(BONUS_OBJS)
+	@rm -f $(OBJS) $(BONUS_OBJS)
 
 # Limpa arquivos objeto e a biblioteca gerada (.a)
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 # Limpa e recompila tudo do zero
 re: fclean all

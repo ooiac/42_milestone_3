@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 14:44:03 by fluca             #+#    #+#             */
-/*   Updated: 2025/12/10 15:22:53 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:23:04 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,29 @@ static void	expand_argv(char **argv, char **env, int exit_status)
 	}
 }
 
+static void	remove_empty_args(t_ast *ast)
+{
+	int	i;
+	int	j;
+
+	if (!ast->argv)
+		return ;
+	i = 0;
+	j = 0;
+	while (ast->argv[i])
+	{
+		if (ast->argv[i][0] != '\0')
+		{
+			ast->argv[j] = ast->argv[i];
+			j++;
+		}
+		else
+			free(ast->argv[i]);
+		i++;
+	}
+	ast->argv[j] = NULL;
+}
+
 static void	expand_redirs(t_redir *redir, char **env, int exit_status)
 {
 	char	*expanded;
@@ -43,7 +66,10 @@ static void	expand_redirs(t_redir *redir, char **env, int exit_status)
 static void	expand_command(t_ast *ast, char **env, int exit_status)
 {
 	if (ast->argv)
+	{
 		expand_argv(ast->argv, env, exit_status);
+		remove_empty_args(ast);
+	}
 	if (ast->redirs)
 		expand_redirs(ast->redirs, env, exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 12:27:15 by fluca             #+#    #+#             */
-/*   Updated: 2025/12/10 15:29:26 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/15 10:33:05 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ static void	exec_cmd_node(t_ast *ast, t_env *env, int input_fd)
 		exit(exec_builtin(ast->argv, &env));
 	execve(resolve_executable(ast->argv[0], env), ast->argv,
 		env_to_envp(env));
+	perror(ast->argv[0]);
+	if (errno == EACCES || errno == EISDIR)
+		exit(126);
 	exit(127);
 }
 
@@ -39,6 +42,19 @@ static void	exec_pipe_child(t_ast *ast, t_env *env, int input_fd, int *pipefd)
 	exit(1);
 }
 
+static void	wait_all_children(int *status)
+{
+	int	tmp_status;
+
+	while (waitpid(-1, &tmp_status, 0) > 0)
+	{
+		if (WIFEXITED(tmp_status))
+			*status = WEXITSTATUS(tmp_status);
+		else if (WIFSIGNALED(tmp_status))
+			*status = 128 + WTERMSIG(tmp_status);
+	}
+}
+
 int	exec_pipeline_recursive(t_ast *ast, t_env *env, int input_fd)
 {
 	int		pipefd[2];
@@ -46,7 +62,11 @@ int	exec_pipeline_recursive(t_ast *ast, t_env *env, int input_fd)
 	int		status;
 
 	if (!ast)
-		return (0);
+	{
+		status = 0;
+		wait_all_children(&status);
+		return (status);
+	}
 	if (ast->type == NODE_CMD)
 		exec_cmd_node(ast, env, input_fd);
 	if (pipe(pipefd) < 0)
@@ -57,6 +77,5 @@ int	exec_pipeline_recursive(t_ast *ast, t_env *env, int input_fd)
 	close(pipefd[1]);
 	if (input_fd != STDIN_FILENO)
 		close(input_fd);
-	waitpid(pid, &status, 0);
 	return (exec_pipeline_recursive(ast->right, env, pipefd[0]));
 }

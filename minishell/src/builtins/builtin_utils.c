@@ -6,7 +6,7 @@
 /*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 13:38:14 by caida-si          #+#    #+#             */
-/*   Updated: 2025/11/20 15:28:31 by caida-si         ###   ########.fr       */
+/*   Updated: 2025/12/15 09:55:48 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	exec_builtin(char **args, t_env **env)
 	if (ft_strcmp(args[0], "cd") == 0)
 		return (builtin_cd(args, env));
 	if (ft_strcmp(args[0], "pwd") == 0)
-		return (builtin_pwd());
+		return (builtin_pwd(*env));
 	if (ft_strcmp(args[0], "export") == 0)
 		return (builtin_export(args, env));
 	if (ft_strcmp(args[0], "unset") == 0)

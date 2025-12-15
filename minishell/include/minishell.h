@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
+/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:44:30 by caida-si          #+#    #+#             */
-/*   Updated: 2025/12/03 13:10:45 by fluca            ###   ########.fr       */
+/*   Updated: 2025/12/15 16:23:04 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,11 @@ int		exec_pipeline_recursive(t_ast *ast, t_env *env, int input_fd);
 int		apply_redirections(t_redir *redirs);
 int		exec_simple_command(t_ast *ast, t_env **env);
 
+/* redir utils */
+int		apply_redir_in(t_redir *redir);
+int		has_output_redir_after(t_redir *current);
+int		open_redir_file(t_redir *redir);
+
 /* pipeline helpers */
 typedef struct s_pipe_ctx
 {
@@ -74,7 +79,7 @@ int		wait_all(pid_t *pids, int n);
 int		is_builtin(const char *cmd);
 int		exec_builtin(char **args, t_env **env);
 int		builtin_echo(char **args);
-int		builtin_pwd(void);
+int		builtin_pwd(t_env *env);
 int		builtin_env(t_env *env);
 int		builtin_cd(char **args, t_env **env);
 int		builtin_export(char **args, t_env **env);

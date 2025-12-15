@@ -3,64 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast_1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fluca <fluca@student.42.fr>                +#+  +:+       +#+        */
+/*   By: caida-si <caida-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 21:02:36 by caida-si          #+#    #+#             */
-/*   Updated: 2025/12/02 14:42:31 by fluca            ###   ########.fr       */
+/*   Updated: 2025/12/15 16:23:04 by caida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static int	apply_redir_in(t_redir *redir)
+static int	apply_output_redir(t_redir *tmp)
 {
 	int	fd;
 
-	fd = open(redir->target, O_RDONLY);
+	fd = open_redir_file(tmp);
 	if (fd < 0)
-		return (perror(redir->target), -1);
-	dup2(fd, STDIN_FILENO);
-	close(fd);
-	return (0);
-}
-
-static int	apply_redir_out(t_redir *redir)
-{
-	int	fd;
-	int	flags;
-
-	if (redir->type == T_REDIR_OUT)
-		flags = O_WRONLY | O_CREAT | O_TRUNC;
-	else
-		flags = O_WRONLY | O_CREAT | O_APPEND;
-	fd = open(redir->target, flags, 0644);
-	if (fd < 0)
-		return (perror(redir->target), -1);
-	dup2(fd, STDOUT_FILENO);
+		return (-1);
+	if (!has_output_redir_after(tmp))
+		dup2(fd, STDOUT_FILENO);
 	close(fd);
 	return (0);
 }
 
 int	apply_redirections(t_redir *redirs)
 {
-	while (redirs)
+	t_redir	*tmp;
+
+	tmp = redirs;
+	while (tmp)
 	{
-		if (redirs->type == T_REDIR_IN)
+		if (tmp->type == T_REDIR_IN)
 		{
-			if (apply_redir_in(redirs) < 0)
+			if (apply_redir_in(tmp) < 0)
 				return (-1);
 		}
-		else if (redirs->type == T_REDIR_OUT || redirs->type == T_REDIR_APPEND)
+		else if (tmp->type == T_REDIR_OUT || tmp->type == T_REDIR_APPEND)
 		{
-			if (apply_redir_out(redirs) < 0)
+			if (apply_output_redir(tmp) < 0)
 				return (-1);
 		}
-		else if (redirs->type == T_HEREDOC && redirs->heredoc_fd >= 0)
+		else if (tmp->type == T_HEREDOC && tmp->heredoc_fd >= 0)
 		{
-			dup2(redirs->heredoc_fd, STDIN_FILENO);
-			close(redirs->heredoc_fd);
+			dup2(tmp->heredoc_fd, STDIN_FILENO);
+			close(tmp->heredoc_fd);
 		}
-		redirs = redirs->next;
+		tmp = tmp->next;
 	}
 	return (0);
 }
