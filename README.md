@@ -1,285 +1,76 @@
-# 42 School — Milestone 3
+# Milestone 3 — minishell and philosophers
 
-Welcome to **Milestone 3** of the 42 School curriculum! This milestone contains two major projects that focus on **system programming, process management, and low-level Unix concepts**.
+Two Unix programming projects in C. `minishell` deals with processes, file descriptors, command parsing, and the environment. `philosophers` is about threads that share resources and must avoid deadlocks and data races.
 
-## Overview
+## minishell
 
-Milestone 3 represents a significant step up in complexity from earlier milestones. It challenges students to implement sophisticated system tools and understand concurrent programming with multi-threading and multi-processing.
+Project: [`minishell/`](minishell/) · [Detailed README](minishell/README.md)
 
-| Project | Type | Language | Key Concepts |
-|---------|------|----------|--------------|
-| **Minishell** | System Tool | C | Shell implementation, process management, file descriptors, parsing |
-| **Philosophers** | Concurrent Simulation | C | Threading, mutex synchronization, deadlock prevention |
+A Bash-like interactive shell built with `readline`, `fork`, `execve`, pipes, and file descriptor redirection. The point isn't to recreate Bash completely; it's to interpret and execute the required subset of shell syntax without delegating parsing to a system shell.
 
----
+### Input to execution
 
-## Project 1: Minishell
-
-### What It Is
-
-**Minishell** is a simplified shell interpreter (like bash) written in C. It's one of the most comprehensive projects in the 42 curriculum, requiring students to build a complete command-line interpreter from scratch.
-
-### Features Implemented
-
-#### Environment & Variable Management
-- **Environment Parsing**: Read and manage the process environment (`envp`)
-- **Environment Variables**: Create, modify, and delete environment variables
-- **Variable Expansion**: Expand `$VARIABLE` references in commands
-- **Exit Status**: Track and expand `$?` (last command exit code)
-
-#### Command Execution
-- **Command Resolution**: Find executables using the `PATH` environment variable
-- **Simple Commands**: Execute standalone programs with arguments
-- **Pipelines**: Chain multiple commands together (e.g., `cat file.txt | grep "pattern" | wc -l`)
-- **Process Management**: Fork and execute child processes using `fork()` and `execve()`
-
-#### Built-in Commands (Shell Internals)
-Unlike external programs, these run within the shell process:
-- **`echo`**: Print text (with `-n` flag to omit newline)
-- **`cd`**: Change directory
-- **`pwd`**: Print working directory
-- **`export`**: Define or modify environment variables
-- **`unset`**: Remove environment variables
-- **`env`**: Display all environment variables
-- **`exit`**: Terminate the shell with an optional exit code
-
-#### User Interface
-- **Interactive Prompt**: Uses `readline()` library for user input
-- **Command History**: Navigate previous commands (via readline)
-- **Signal Handling**: Responds to Ctrl-C and other signals appropriately
-
-### Under Development
-
-- **Parser & Lexer**: Tokenizing input and building Abstract Syntax Trees (AST)
-- **Redirections**: Input (`<`), output (`>`), append (`>>`)
-- **Heredocs**: Multi-line input (`<<`)
-- **Quote Handling**: Respecting single and double quotes semantics
-- **Variable Expansion in All Contexts**: Proper expansion in quoted strings and redirections
-
-### How It Works: Architecture
-
-```
-User Input (readline)
-    ↓
-Lexer (tokenization)
-    ↓
-Parser (syntax validation & AST building)
-    ↓
-Expander (variable expansion, quote removal)
-    ↓
-Executor (fork/execve or builtin invocation)
-    ↓
-Output Display or Environment Update
+```text
+readline()
+   |
+   v
+lexer              words, operators, quote context
+   |
+   v
+parser             command and pipeline structure
+   |
+   v
+expansion          $VARIABLE, $?, quote removal
+   |
+   v
+executor           builtins, fork/execve, pipes, redirections
 ```
 
-### Learning Outcomes
+The shell resolves external executables using `PATH` and sets up pipes for commands such as `cat file | grep text | wc -l`. Redirections include `<`, `>`, `>>`, and heredocs (`<<`). Single and double quotes affect whether words are split or variables are expanded. The shell maintains an environment representation internally and converts it when passing the environment to `execve`.
 
-- **Understanding Unix processes**: How `fork()` and `execve()` work
-- **File Descriptors & Pipes**: Inter-process communication
-- **Parsing & Lexical Analysis**: Building interpreters
-- **Environment Management**: Working with system variables
-- **System Calls**: Deep dive into kernel interfaces
+The required builtins are `echo`, `cd`, `pwd`, `export`, `unset`, `env`, and `exit`. Commands that change shell state, such as `cd` and `export`, must affect the parent shell when run as standalone builtins; running them only in a forked child would lose the changes.
 
-### Compilation & Usage
+Signals need different handling in the interactive prompt, a heredoc, and a child process. The source includes lexer, parser, expansion, heredoc, and redirection code, even though an older internal README described several of these as unfinished. See the internal README for the directory layout and work split.
 
-```bash
+```sh
 cd minishell
-make              # Compile the project
-./minishell       # Run the shell
-exit              # Type to quit
+make
+./minishell
 ```
 
----
+## philosophers
 
-## Project 2: Philosophers (Dining Philosophers Problem)
+Project: [`philosophers/`](philosophers/)
 
-### What It Is
+An implementation of the dining philosophers problem with POSIX threads and mutexes. Each philosopher alternates between taking forks, eating, sleeping, and thinking. There are as many forks as philosophers, and each philosopher needs two to eat.
 
-**Philosophers** simulates the classic "Dining Philosophers Problem"—a synchronization puzzle that illustrates deadlock, resource allocation, and concurrent programming challenges. Students implement it using **POSIX threads (pthreads)** and mutex locks.
+### The synchronization problem
 
-### The Problem Scenario
+A fork is shared state. If two philosophers grab it at the same time, the simulation is wrong; a mutex protects that fork. But using mutexes introduces the possibility of **deadlock**: every philosopher takes one fork and waits indefinitely for the other.
 
-Imagine N philosophers sitting at a round table with spaghetti in the center. Each philosopher needs two forks to eat (one on each side), but there are only N forks total—one between each pair of neighbors.
+There is also **starvation**: a philosopher may not eat before their `time_to_die` limit even if the program hasn't deadlocked. A monitoring routine checks the last meal timestamps and stops the simulation when a death is detected or the optional meal target has been reached. Reads and writes to shared timestamps, stop flags, and meal counters must be synchronized as well; mutexes on forks alone do not prevent data races.
 
-```
-        🍴 Philosopher 1 🍴
-        ↙              ↖
-   Forks              Forks
-        ↙              ↖
-   🍴 Philosopher N    Philosopher 2 🍴
-```
+### Arguments
 
-Each philosopher alternates between three states:
-1. **Eating** (holding two forks)
-2. **Sleeping** (thinking, no forks needed)
-3. **Thinking** (reflecting, no forks needed)
-
-### The Challenge
-
-The core problem: **How do you prevent deadlock and starvation?**
-
-**Deadlock** occurs when:
-- Philosopher A picks up their left fork
-- Philosopher B picks up their right fork
-- A waits for their right fork (held by B)
-- B waits for their left fork (held by A)
-→ Both wait forever!
-
-**Starvation** occurs when:
-- Some philosophers never get to eat because others monopolize the forks
-
-### Solution Approach
-
-Your implementation uses:
-
-- **Pthreads**: Create one thread per philosopher
-- **Mutexes**: Lock each fork to prevent simultaneous access
-- **Synchronization**: Coordinate philosopher actions without deadlock
-- **Timing**: Track meal times and enforce time limits (death if too hungry)
-
-### Key Parameters
-
-The program takes command-line arguments:
-
-```bash
-./philo <number_of_philosophers> <time_to_die> <time_to_eat> <time_to_sleep> [optional: number_of_meals]
-```
-
-| Parameter | Meaning |
-|-----------|---------|
-| `number_of_philosophers` | How many philosophers (also number of forks) |
-| `time_to_die` | Milliseconds a philosopher can go without eating before dying |
-| `time_to_eat` | Milliseconds it takes to eat |
-| `time_to_sleep` | Milliseconds a philosopher sleeps |
-| `number_of_meals` | (Optional) If specified, simulation ends after each philosopher eats this many times |
-
-### Example Usage
-
-```bash
-# 5 philosophers, 800ms until starvation, 200ms to eat, 200ms to sleep
+```sh
+cd philosophers
+make
 ./philo 5 800 200 200
-
-# Philosophers eat 7 meals each, then stop
 ./philo 4 410 100 100 7
 ```
 
-### What Happens at Runtime
-
-
-The program should output lines showing each philosopher's actions with timestamps:
-
-```
-[timestamp] [philosopher_number] has taken a fork
-[timestamp] [philosopher_number] is eating
-[timestamp] [philosopher_number] is sleeping
-[timestamp] [philosopher_number] is thinking
-[timestamp] [philosopher_number] died
+```text
+./philo number_of_philosophers time_to_die time_to_eat time_to_sleep [meals_required]
 ```
 
-Example:
-```
+All times are in milliseconds. With `meals_required`, the simulation can terminate once every philosopher has eaten enough; otherwise it runs until one dies. Output records a timestamp, philosopher ID, and action, for example:
+
+```text
 0 1 has taken a fork
 0 1 is eating
 200 1 is sleeping
-500 2 has taken a fork
-500 2 is eating
-...
 ```
 
-### Learning Outcomes
+Test one philosopher separately: with only one fork, eating cannot begin. Also try tight timing values and compare runs with different philosopher counts. Tools like Valgrind's Helgrind can help detect accesses to shared state that were not protected by the same mutex.
 
-- **Concurrent Programming**: Managing multiple threads
-- **Synchronization Primitives**: Mutex locks and thread safety
-- **Deadlock Prevention**: Strategies to avoid circular wait conditions
-- **Race Conditions**: Identifying and fixing data races
-- **System Timing**: Working with millisecond precision using `gettimeofday()`
-- **Thread Lifecycle**: pthread creation, joining, and cleanup
-
-### Compilation & Usage
-
-```bash
-cd philosophers
-make                    # Compile
-./philo 5 800 200 200  # Run simulation
-```
-
----
-
-## Why These Projects Matter
-
-### Minishell
-- **Practical Real-World Skill**: Shells are essential Unix tools
-- **Comprehensive Systems Knowledge**: Touches every major OS concept (processes, environment, file descriptors)
-- **Code Organization**: Large project requires thoughtful architecture
-- **Parsing Skills**: Useful across programming disciplines
-
-### Philosophers
-- **Critical Concurrency Patterns**: Threading is everywhere in modern software
-- **Synchronization Mastery**: Mutex locks, condition variables, and deadlock prevention
-- **Performance Considerations**: How to write efficient multi-threaded code
-- **Debugging Complexity**: Concurrent bugs are notoriously hard to find and fix
-
----
-
-## Curriculum Context
-
-| Milestone | Projects | Focus |
-|-----------|----------|-------|
-| 0 | libft | Build foundational C library |
-| 1 | ft_printf, get_next_line | I/O and string manipulation |
-| 2 | push_swap, minitalk | Algorithms and inter-process communication |
-| **3** | **minishell, philosophers** | **Systems programming & concurrency** |
-| 4 | cub3d | Graphics and ray-casting |
-
-Milestone 3 is where students prove they understand how Unix systems work at a deep level. Success here opens doors to understanding virtually any systems-level code.
-
----
-
-## Resources & References
-
-### For Minishell:
-- bash manual: `man bash`
-- execve(2): `man execve`
-- fork(2): `man fork`
-- readline(3): GNU readline library documentation
-
-### For Philosophers:
-- pthread(7): `man pthread`
-- pthread_create(3), pthread_join(3), pthread_mutex_lock(3)
-- The classic paper: "Dining Philosophers Problem" by Edsger Dijkstra
-
----
-
-## Checklist for Success
-
-### Minishell
-- [ ] Environment variables work correctly
-- [ ] Builtins (echo, cd, pwd, export, unset, env, exit) function properly
-- [ ] Pipes connect commands correctly
-- [ ] PATH resolution finds executables
-- [ ] Child processes fork and execute without hanging
-- [ ] Readline integration works smoothly
-- [ ] Edge cases handled (empty commands, missing files, etc.)
-
-### Philosophers
-- [ ] Threads start and stop cleanly
-- [ ] All philosophers can eat (no indefinite starvation)
-- [ ] Death detection works accurately
-- [ ] Philosophers don't pick up the same fork twice
-- [ ] Timestamps are accurate (millisecond precision)
-- [ ] Optional meal limit works when specified
-- [ ] No data races or segmentation faults
-
----
-
-## Tips for Success
-
-1. **Minishell**: Start with parsing and lexing early. A solid AST makes everything else easier.
-2. **Philosophers**: Test with small numbers of philosophers first (2-3) to debug synchronization issues.
-3. **Both**: Write clear, modular code. These aren't small projects—organization is key.
-4. **Testing**: Create comprehensive test cases before implementation.
-5. **Debugging**: Use tools like `strace`, `ltrace`, and `gdb` to understand system behavior.
-
----
-
-**Good luck! Milestone 3 is challenging but incredibly rewarding.**
+Both programs require thinking beyond the happy path: `minishell` must preserve parent/child state correctly; `philosophers` must stay consistent even when thread scheduling changes between runs.
