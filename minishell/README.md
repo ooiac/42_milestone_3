@@ -1,305 +1,102 @@
-# 🇺🇸 Minishell (42) — Shell Implementation in C
+# minishell
 
-A minimalist shell interpreter developed in C as part of the 42 Minishell project.
+*A shell written in C for the 42 Common Core.*
 
-## 📋 Description
+This project implements a subset of Bash: an interactive prompt, command parsing, environment variables, builtins, external commands, pipelines, redirections, and heredocs. It uses `readline` for the prompt and command history.
 
-This project implements a basic shell similar to bash, capable of:
-- Executing commands with PATH resolution
-- Managing environment variables
-- Implementing builtins (echo, cd, pwd, export, unset, env, exit)
-- Executing pipelines
-- Managing redirections (in development)
-- Command history via readline
+The original README documented an early split between the parser and executor teams. Those parts have since been integrated in the source, so the old “parser in development” checklist is no longer a useful description of the project.
 
-## 🚀 Project Status
+## Supported features
 
-### ✅ Implemented (Half B - Execution)
+- External commands found through `PATH`, or called by a relative/absolute path.
+- Pipelines using `pipe`, `dup2`, `fork`, and `execve`.
+- Redirections: `<`, `>`, `>>`, and heredocs (`<<`).
+- Single and double quotes, variable expansion (`$NAME`) and the last exit status (`$?`).
+- Interactive history and signal handling.
+- Builtins: `echo` (including `-n`), `cd`, `pwd`, `export`, `unset`, `env`, and `exit`.
 
-**Environment Management:**
-- ✅ Parsing `envp` to linked list
-- ✅ Converting `t_env` → `char**` for `execve`
-- ✅ Variable search and manipulation
+This is not a drop-in Bash replacement. Features outside the 42 subject, such as full job control or Bash scripting syntax, are not the goal.
 
-**Executor:**
-- ✅ Simple command execution with `fork/execve`
-- ✅ PATH resolution
-- ✅ Pipeline (base structure)
-- ✅ Child process management
+## How a command gets executed
 
-**Builtins:**
-- ✅ `echo` (with `-n` flag)
-- ✅ `cd` (directory navigation)
-- ✅ `pwd` (current directory)
-- ✅ `export` (add/modify variables)
-- ✅ `unset` (remove variables)
-- ✅ `env` (list environment)
-- ✅ `exit` (with exit code)
-
-**Interface:**
-- ✅ Main loop with `readline()`
-- ✅ Command history
-
-### 🔄 In Development (Half A - Parser)
-
-- ⏳ Lexer (tokenization)
-- ⏳ Parser (AST construction)
-- ⏳ Variable expansion (`$VAR`)
-- ⏳ Redirections (`<`, `>`, `>>`)
-- ⏳ Heredoc (`<<`)
-- ⏳ Signals (Ctrl-C, Ctrl-\, Ctrl-D)
-- ⏳ Quotes (single and double)
-
-## 🛠️ Compilation
-
-### Requirements:
-- GCC or Clang
-- Make
-- readline library (`libreadline-dev`)
-- Linux/Unix system or WSL (Windows)
-
-### Compile:
-```bash
-make
+```text
+readline(input)
+    |
+    v
+lexer -> tokens and quote context
+    |
+    v
+parser -> commands and pipeline structure
+    |
+    v
+expansion / heredoc processing
+    |
+    v
+executor -> builtins or child processes
+    |
+    v
+wait / update exit status
 ```
 
-### Run:
-```bash
+A command such as `cat file.txt | grep test > result.txt` needs two child processes, a pipe between them, and the output file opened and connected to the appropriate descriptor. The parent shell closes the descriptors it doesn't need, then waits for its children.
+
+Standalone builtins that change shell state (`cd`, `export`, `unset`, `exit`) are different from external commands. A `cd` executed only inside a child process would change the child's directory and leave the parent shell where it was.
+
+Environment variables are stored internally in a linked representation. For external commands that use `execve`, that data has to be converted back to a NULL-terminated `char **envp` array. The implementation also keeps track of the previous exit status so `$?` works.
+
+## Build
+
+Requires Linux/Unix, a C compiler, Make, and readline development headers/libraries.
+
+```sh
+cd minishell
+make
 ./minishell
 ```
 
-### Clean:
-```bash
-make fclean
+Use `make clean`, `make fclean`, or `make re` to clean or rebuild. Run `norminette` if you're checking 42 formatting rules.
+
+## Tests to try
+
+```sh
+pwd
+echo hello world
+echo -n "no newline"
+export TEST=123
+echo "$TEST"
+echo '$TEST'
+ls -la | wc -l
+echo content > /tmp/minishell_test
+cat < /tmp/minishell_test
+cat << EOF
+unset TEST
+cd /tmp
+pwd
+exit
 ```
 
-## 📁 Project Structure
+The two quoted `echo` commands should behave differently: `$TEST` expands in double quotes but stays literal in single quotes. Also check syntax errors, missing files, a failed executable, multiple pipes, and Ctrl-C at the prompt versus during a running child.
 
-```
-minishell/
-├── main.c                    # Entry point
-├── Makefile
-├── include/
-│   └── minishell.h          # Main headers
-├── libft/                    # libft library
-├── src/
-│   ├── env/                 # Environment management
-│   │   ├── env.c
-│   │   └── env_to_envp.c
-│   ├── executor/            # Command execution
-│   │   ├── exec.c
-│   │   ├── resolve_path.c
-│   │   ├── pipeline.c
-│   │   └── pipeline_utils.c
-│   ├── shell/               # Main loop
-│   │   └── shell.c
-│   └── builtins/            # Built-in commands
-│       ├── builtin_utils.c
-│       ├── builtin_echo.c
-│       ├── builtin_pwd.c
-│       ├── builtin_env.c
-│       ├── builtin_cd.c
-│       ├── builtin_export.c
-│       ├── builtin_unset.c
-│       └── builtin_exit.c
-└── WORK_SPLIT.txt           # Work division
-```
+## Project layout and work division
 
-## 🧪 Basic Tests
+| Area | Responsibility |
+| --- | --- |
+| `src/env/` | Environment variables and conversion for `execve`. |
+| `src/lexer/`, `src/parser/` | Tokens, syntax validation, and command structure. |
+| `src/expander/`, `src/heredoc/` | Expansion and heredoc input. |
+| `src/executor/` | PATH resolution, processes, pipes, and redirections. |
+| `src/builtins/` | Built-in shell commands. |
+| `src/signals/`, `src/shell/` | Signals and interactive loop. |
+| `include/`, `libft/` | Headers and common C functions. |
 
-```bash
-minishell> pwd
-minishell> echo hello world
-minishell> echo -n test
-minishell> env
-minishell> export TEST=123
-minishell> env | grep TEST
-minishell> unset TEST
-minishell> cd /tmp
-minishell> pwd
-minishell> ls -la
-minishell> exit
-```
+The original team division was **Half A** (lexer, parser, expansion, heredocs) and **Half B** (execution, builtins, environment, redirections). See `WORK_SPLIT.txt` for the original assignment.
 
-## 📝 Norminette
-
-Project developed following 42's Norminette:
-- Maximum 25 lines per function
-- Maximum 5 functions per file
-- No `for`, only `while`
-- Naming conventions
-
-To check:
-```bash
-norminette
-```
-
-## 👥 Work Division
-
-As per `WORK_SPLIT.txt`:
-- **Half A**: Lexer, Parser, Expander, Heredoc (in development)
-- **Half B**: Executor, Builtins, Env, Redirections (implemented)
-
-## 📚 Resources
-
-- [GNU Bash Manual](https://www.gnu.org/software/bash/manual/)
-- [execve man page](https://man7.org/linux/man-pages/man2/execve.2.html)
-- [readline documentation](https://tiswww.case.edu/php/chet/readline/rltop.html)
-
-## ⚠️ Note
-
-This project is under active development. Integration between parser (Half A) and executor (Half B) will be done later.
+References: [Bash reference manual](https://www.gnu.org/software/bash/manual/), `man 2 execve`, `man 2 pipe`, and [readline documentation](https://tiswww.case.edu/php/chet/readline/rltop.html).
 
 ---
 
-# 🇧🇷 Minishell (42) — Implementação de Shell em C
+## Resumo em português
 
-Um interpretador de shell minimalista desenvolvido em C como parte do projeto Minishell da 42.
+O `minishell` é um shell interativo em C. A entrada passa pelo lexer, parser e expansor antes de chegar ao executor. Comandos externos usam `fork`/`execve` e busca pelo `PATH`; pipelines usam pipes e redirecionamento de descritores. Os builtins (`cd`, `export`, `unset`, etc.) alteram o estado do próprio shell quando executados isoladamente.
 
-## 📋 Descrição
-
-Este projeto implementa um shell básico similar ao bash, capaz de:
-- Executar comandos com resolução de PATH
-- Gerenciar variáveis de ambiente
-- Implementar builtins (echo, cd, pwd, export, unset, env, exit)
-- Executar pipelines
-- Gerenciar redireções (em desenvolvimento)
-- Histórico de comandos via readline
-
-## 🚀 Status do Projeto
-
-### ✅ Implementado (Metade B - Execução)
-
-**Gerenciamento de Ambiente:**
-- ✅ Parsing de `envp` para lista encadeada
-- ✅ Conversão `t_env` → `char**` para `execve`
-- ✅ Busca e manipulação de variáveis
-
-**Executor:**
-- ✅ Execução de comandos simples com `fork/execve`
-- ✅ Resolução de PATH
-- ✅ Pipeline (estrutura base)
-- ✅ Gestão de processos filhos
-
-**Builtins:**
-- ✅ `echo` (com flag `-n`)
-- ✅ `cd` (navegação de diretórios)
-- ✅ `pwd` (diretório atual)
-- ✅ `export` (adicionar/modificar variáveis)
-- ✅ `unset` (remover variáveis)
-- ✅ `env` (listar ambiente)
-- ✅ `exit` (com código de saída)
-
-**Interface:**
-- ✅ Loop principal com `readline()`
-- ✅ Histórico de comandos
-
-### 🔄 Em Desenvolvimento (Metade A - Parser)
-
-- ⏳ Lexer (tokenização)
-- ⏳ Parser (construção de AST)
-- ⏳ Expansão de variáveis (`$VAR`)
-- ⏳ Redireções (`<`, `>`, `>>`)
-- ⏳ Heredoc (`<<`)
-- ⏳ Sinais (Ctrl-C, Ctrl-\, Ctrl-D)
-- ⏳ Aspas (simples e duplas)
-
-## 🛠️ Compilação
-
-### Requisitos:
-- GCC ou Clang
-- Make
-- Biblioteca readline (`libreadline-dev`)
-- Sistema Linux/Unix ou WSL (Windows)
-
-### Compilar:
-```bash
-make
-```
-
-### Executar:
-```bash
-./minishell
-```
-
-### Limpar:
-```bash
-make fclean
-```
-
-## 📁 Estrutura do Projeto
-
-```
-minishell/
-├── main.c                    # Entry point
-├── Makefile
-├── include/
-│   └── minishell.h          # Headers principais
-├── libft/                    # Biblioteca libft
-├── src/
-│   ├── env/                 # Gerenciamento de ambiente
-│   │   ├── env.c
-│   │   └── env_to_envp.c
-│   ├── executor/            # Execução de comandos
-│   │   ├── exec.c
-│   │   ├── resolve_path.c
-│   │   ├── pipeline.c
-│   │   └── pipeline_utils.c
-│   ├── shell/               # Loop principal
-│   │   └── shell.c
-│   └── builtins/            # Comandos internos
-│       ├── builtin_utils.c
-│       ├── builtin_echo.c
-│       ├── builtin_pwd.c
-│       ├── builtin_env.c
-│       ├── builtin_cd.c
-│       ├── builtin_export.c
-│       ├── builtin_unset.c
-│       └── builtin_exit.c
-└── WORK_SPLIT.txt           # Divisão de trabalho
-```
-
-## 🧪 Testes Básicos
-
-```bash
-minishell> pwd
-minishell> echo hello world
-minishell> echo -n test
-minishell> env
-minishell> export TEST=123
-minishell> env | grep TEST
-minishell> unset TEST
-minishell> cd /tmp
-minishell> pwd
-minishell> ls -la
-minishell> exit
-```
-
-## 📝 Norminette
-
-Projeto desenvolvido seguindo a Norminette da 42:
-- Máximo 25 linhas por função
-- Máximo 5 funções por arquivo
-- Sem `for`, apenas `while`
-- Naming conventions
-
-Para verificar:
-```bash
-norminette
-```
-
-## 👥 Divisão de Trabalho
-
-Conforme `WORK_SPLIT.txt`:
-- **Metade A**: Lexer, Parser, Expander, Heredoc (em desenvolvimento)
-- **Metade B**: Executor, Builtins, Env, Redireções (implementado)
-
-## 📚 Recursos
-
-- [GNU Bash Manual](https://www.gnu.org/software/bash/manual/)
-- [execve man page](https://man7.org/linux/man-pages/man2/execve.2.html)
-- [readline documentation](https://tiswww.case.edu/php/chet/readline/rltop.html)
-
-## ⚠️ Nota
-
-Este projeto está em desenvolvimento ativo. A integração entre parser (Metade A) e executor (Metade B) será feita posteriormente.
+O README anterior estava desatualizado e marcava o parser e os heredocs como “em desenvolvimento”. O código atual já contém essas partes integradas. Os detalhes de compilação, estrutura e testes estão acima; os comandos são os mesmos nas duas línguas.
